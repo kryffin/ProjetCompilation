@@ -58,5 +58,5 @@ commentaire = [/][/].*
 
 .                       { throw new AnalyseLexicaleException(yyline, yycolumn, yytext()) ; }
 
-{commentaire}             {}
+{commentaire}           {}
 
