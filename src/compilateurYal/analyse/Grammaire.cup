@@ -1,10 +1,10 @@
-package compilateurYal.yal.analyse ;
+package compilateurYal.analyse ;
 
 import java.util.*;
-import compilateurYal.yal.arbre.* ;
-import compilateurYal.yal.arbre.expressions.* ;
-import compilateurYal.yal.arbre.instructions.* ;
-import compilateurYal.yal.exceptions.AnalyseSyntaxiqueException;
+import compilateurYal.arbre.* ;
+import compilateurYal.arbre.expressions.* ;
+import compilateurYal.arbre.instructions.* ;
+import compilateurYal.exceptions.AnalyseSyntaxiqueException;
 
 import java_cup.runtime.*;
 

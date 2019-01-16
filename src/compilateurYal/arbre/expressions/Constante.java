@@ -1,4 +1,4 @@
-package compilateurYal.yal.arbre.expressions;
+package compilateurYal.arbre.expressions;
 
 public abstract class Constante extends Expression {
 

@@ -1,6 +1,6 @@
-package compilateurYal.yal.arbre.instructions;
+package compilateurYal.arbre.instructions;
 
-import compilateurYal.yal.arbre.expressions.Expression;
+import compilateurYal.arbre.expressions.Expression;
 
 public class Ecrire extends Instruction {
 

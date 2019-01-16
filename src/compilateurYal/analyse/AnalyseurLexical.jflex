@@ -1,7 +1,7 @@
-package compilateurYal.yal.analyse ;
+package compilateurYal.analyse ;
 
 import java_cup.runtime.*;
-import compilateurYal.yal.exceptions.AnalyseLexicaleException;
+import compilateurYal.exceptions.AnalyseLexicaleException;
       
 %%
    

@@ -1,4 +1,4 @@
-package compilateurYal.yal.exceptions;
+package compilateurYal.exceptions;
 
 public class AnalyseSemantiqueException extends AnalyseException {
  

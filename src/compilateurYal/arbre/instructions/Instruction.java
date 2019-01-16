@@ -1,6 +1,6 @@
-package compilateurYal.yal.arbre.instructions;
+package compilateurYal.arbre.instructions;
 
-import compilateurYal.yal.arbre.ArbreAbstrait;
+import compilateurYal.arbre.ArbreAbstrait;
 
 public abstract class Instruction extends ArbreAbstrait {
 

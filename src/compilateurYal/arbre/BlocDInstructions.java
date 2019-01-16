@@ -1,4 +1,4 @@
-package compilateurYal.yal.arbre;
+package compilateurYal.arbre;
 
 import java.util.ArrayList;
 

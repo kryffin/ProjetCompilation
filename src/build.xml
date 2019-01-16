@@ -11,7 +11,7 @@
     <description>Builds, tests, and runs the project Toucan.</description>
     <dirname property="module.compilation.basedir" file="${ant.file.compilation}"/>
     <property name="excludes" value="**/*.cup,**/*.jflex,**/*.odt,**/*.pdf"/>
-    <property name="src" value="${module.compilation.basedir}/compilateurYal/yal/analyse"/>
+    <property name="src" value="/Users/nicolasklz/IdeaProjects/ProjetCompilation/src/compilateurYal/analyse"/>
     <target name="init-cup" depends="clean">
         <echo message = "test des fichiers de cup" />
         <condition property="cup.needed" >
