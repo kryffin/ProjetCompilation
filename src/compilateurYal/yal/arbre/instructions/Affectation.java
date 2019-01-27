@@ -26,11 +26,11 @@ public class Affectation extends Instruction {
     @Override
     public String toMIPS() {
         int depl = Tds.getInstance().identifier(new Entree(idf)).getDeplacement();
-        return      "#affectation " +idf + " = " + e +"\n"
+        return      "\t#affectation " +idf + " = " + e +"\n"
                 +   e.toMIPS()
-                +   "move $a0, $v0 \n"
-                +   "li $v0, $a0\n"
-                +   "sw $v0, "+depl+"($s7)\n";
+                +   "\tmove $a0, $v0 \n"
+                +   "\tli $v0, $a0\n"
+                +   "\tsw $v0, "+depl+"($s7)\n";
 
     }
 

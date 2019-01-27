@@ -6,7 +6,7 @@ entier i;
 entier j;
 
 i = 30;
-
+j = 50;
 ecrire 50;
 
 

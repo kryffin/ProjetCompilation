@@ -24,15 +24,21 @@ public class Tds {
         tds.put(e, s);
     }
 
-    public Symbol identifier(Entree e) throws VariableNonDeclareException {
+    public Symbol
+    identifier(Entree e) throws VariableNonDeclareException {
         System.out.println("==identifcation de " + e.getIdf() + " ==");
         for (Map.Entry mapentry : tds.entrySet()) {
+            if(mapentry.getKey().toString().equals(e.getIdf().toString())){
+                e = (Entree) mapentry.getKey();
+                break;
+            }
             System.out.println("clé: " + mapentry.getKey().toString()
                     + " | valeur: " + mapentry.getValue().toString());
         }
         if(tds.containsKey(e)){
             return tds.get(e);
         } else{
+            System.out.println("EH BEN ALORS :o j'ai pas trouvé " + e.toString());
             throw new VariableNonDeclareException("");
         }
     }
