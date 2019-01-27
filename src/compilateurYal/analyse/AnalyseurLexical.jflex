@@ -48,7 +48,29 @@ commentaire = [/][/].*
 
 "ecrire"                { return symbol(CodesLexicaux.ECRIRE); }
 
+"lire"                  { return symbol(CodesLexicaux.LIRE); }
+
+"entier"                { return symbol(CodesLexicaux.ENTIER); }
+
 ";"                     { return symbol(CodesLexicaux.POINTVIRGULE); }
+
+"+"                     { return symbol(CodesLexicaux.PLUS); }
+
+"-"                     { return symbol(CodesLexicaux.MOINS); }
+
+"*"                     { return symbol(CodesLexicaux.FOIS); }
+
+"/"                     { return symbol(CodesLexicaux.DIV); }
+
+"("                     { return symbol(CodesLexicaux.PAR_OUV); }
+
+")"                     { return symbol(CodesLexicaux.PAR_FER); }
+
+"["                     { return symbol(CodesLexicaux.CRO_OUV); }
+
+"]"                     { return symbol(CodesLexicaux.CRO_FER); }
+
+"="                     { return symbol(CodesLexicaux.EGAL); }
 
 {csteE}      	        { return symbol(CodesLexicaux.CSTENTIERE, yytext()); }
 

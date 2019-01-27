@@ -1,23 +1,13 @@
 package compilateurYal.tests;
 
-import compilateurYal.Yal;
-import sun.tools.util.CommandLine;
-
-import java.io.IOException;
+import compilateurYal.arbre.ArbreAbstrait;
 
 class YalTest {
+
+    private ArbreAbstrait aa;
 
     @org.junit.jupiter.api.Test
     void main() {
 
-        String[] args = {"tests/test.yal"};
-
-        Yal.main(args);
-        try {
-            args[0] = "tests/mars.batch";
-            CommandLine.parse(args);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

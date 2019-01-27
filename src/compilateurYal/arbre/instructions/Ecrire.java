@@ -13,11 +13,12 @@ public class Ecrire extends Instruction {
 
     @Override
     public void verifier() {
+        exp.verifier();
     }
 
     @Override
     public String toMIPS() {
-        return  "                   # affichage de l'expression\n" +
+        return  "                # affichage de l'expression\n" +
                 exp.toMIPS() +
                 "    move $a0, $v0\n" +
                 "    li $v0, 1\n" +
