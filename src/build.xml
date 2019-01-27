@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="pre-compile" name="compilateurYal">
+    <description>Builds, tests, and runs the project Yal.</description>
+    <dirname file="${ant.file.compilateurYal}" property="module.compilateurYal.basedir"/>
+    <property name="excludes" value="**/*.cup,**/*.jflex,**/*.odt,**/*.pdf"/>
+    <property name="src" value="${module.compilateurYal.basedir}/compilateurYal/yal/analyse"/>
+
+<!-- init-cup -->
+    <target name="init-cup" depends="clean">
+        <echo message="test des fichiers de cup"/>
+        <condition property="cup.needed">
+            <or>
+                <not>
+                    <available file="${src}/AnalyseurSyntaxique.java"/>
+                </not>
+                <not>
+                    <available file="${src}/CodesLexicaux.java"/>
+                </not>
+                <uptodate srcfile="${src}/AnalyseurSyntaxique.java" targetfile="${src}/Grammaire.cup"> </uptodate>
+            </or>
+        </condition>
+    </target>
+<!-- cup -->
+    <target name="cup" depends="init-cup" if="cup.needed">
+        <echo message="lancement de java-cup"/>
+        <java failonerror="yes" fork="yes" classname="java_cup.Main">
+            <arg line="-symbols CodesLexicaux -parser AnalyseurSyntaxique ${src}/Grammaire.cup"/>
+            <classpath>
+                <pathelement path="${java.class.path}:D:/JFlex/jflex-1.6.1/lib/java-cup-11a.jar"/>
+            </classpath>
+        </java>
+        <move file="AnalyseurSyntaxique.java" tofile="${src}/AnalyseurSyntaxique.java"/>
+        <move file="CodesLexicaux.java" tofile="${src}/CodesLexicaux.java"/>
+    </target>
+
+<!-- init-flex -->
+    <target name="init-lex" depends="cup">
+        <echo message="test des fichiers de jflex"/>
+        <condition property="lex.needed">
+            <or>
+                <not>
+                    <available file="${src}/AnalyseurLexical.java"/>
+                </not>
+                <uptodate srcfile="${src}/AnalyseurLexical.java" targetfile="${src}/AnalyseurLexical.java"> </uptodate>
+                <uptodate srcfile="${src}/AnalyseurLexical.java" targetfile="${src}/AnalyseurLexical.jflex"> </uptodate>
+            </or>
+        </condition>
+    </target>
+<!-- lex -->
+    <target name="lex" depends="init-lex" if="lex.needed">
+        <echo message="lancement de JFlex"/>
+        <java failonerror="yes" fork="yes" classname="jflex.Main">
+            <arg line="${src}/AnalyseurLexical.jflex"/>
+            <classpath>
+                <pathelement path="${java.class.path}:D:/JFlex/jflex-1.6.1/lib/jflex-1.6.1.jar"/>
+            </classpath>
+        </java>
+    </target>
+<!-- pre-compile -->
+    <target name="pre-compile"
+            depends="lex"
+            description="Compile project.">
+        <echo message="compilation du code"/>
+    </target>
+<!-- clean -->
+    <target name="clean">
+        <delete file="${src}/AnalyseurLexical.java"/>
+        <delete file="${src}/AnalyseurSyntaxique.java"/>
+        <delete file="${src}/CodesLexicaux.java"/>
+    </target>
+</project>

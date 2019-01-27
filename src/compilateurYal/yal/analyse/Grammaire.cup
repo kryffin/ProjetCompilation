@@ -5,6 +5,8 @@ import compilateurYal.yal.arbre.* ;
 import compilateurYal.yal.arbre.expressions.* ;
 import compilateurYal.yal.arbre.instructions.* ;
 import compilateurYal.yal.exceptions.AnalyseSyntaxiqueException;
+import compilateurYal.yal.arbre.declaration.*;
+
 
 import java_cup.runtime.*;
 
@@ -12,7 +14,6 @@ action code {:
              :} ;
 
 parser code {:
-
     public void report_error(String message, Object info) {
 
         HashMap<Integer, String> lesTerminaux = new HashMap<>() ;
@@ -56,22 +57,35 @@ parser code {:
    
 /* Terminals (tokens returned by the scanner).  */
 
-terminal Symbol    PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE ;
-terminal String    IDF, CSTENTIERE ;
+terminal Symbol    PROGRAMME, DEBUT, FIN, POINTVIRGULE, EGALE, COUVR, CFERM;
+terminal String    CSTENTIERE;
+terminal Idf       IDF;
    
 /* Non terminals used in the grammar section.  */
 
-non terminal ArbreAbstrait PROG, LINST, INST ;
+non terminal ArbreAbstrait PROG, LINST, INST, LDECL, DECL, AFFECT, ECRIRE, ENTIER;
 non terminal Expression EXP ;
 
 /* ----------------------------Grammar Section-------------------- */
  
 start with PROG ;
 
-PROG    ::=     PROGRAMME  IDF  DEBUT  LINST:li  FIN
-                {: RESULT = li ; :}
+PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL:ld LINST:li  FIN
+                {:
+                    ld.ajouter(li);
+                    RESULT = ld;
+                :}
                 ;
 
+LDECL   ::=     LDECL:ld DECL:d
+                {:  ((BlocDeclaration)ld).ajouter(d);
+                    RESULT = ld;    :}
+                ;
+
+
+DECL    ::=     ENTIER IDF:i POINTVIRGULE
+                {: RESULT = new Declaration(i, ileft+1); :}
+                ;
 LINST   ::=     LINST:li  INST:i
                 {: ((BlocDInstructions)li).ajouter(i) ;
                    RESULT = li ; :}
@@ -82,10 +96,30 @@ LINST   ::=     LINST:li  INST:i
                    RESULT = b ; :}
                 ;
 
-INST    ::=     ECRIRE EXP:e POINTVIRGULE
+INST    ::=     ECRIRE:e
+                {: RESULT = e; :}
+
+        |
+                AFFECT:a
+                {: RESULT = a; :}
+
+                ;
+
+
+AFFECT     ::=   IDF:i EGALE EXP:e POINTVIRGULE
+                {: RESULT = new Affectation(i, e, eleft+1) ; :}
+
+                // IDF COUVR EXP CFERM EGALE EXP POINTVIRGULE
+
+           ;
+
+ECRIRE    ::=     ECRIRE EXP:e POINTVIRGULE
                 {: RESULT = new Ecrire(e, eleft + 1) ; :}
                 ;
-    
+
+
 EXP    ::=     CSTENTIERE:c
-                {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
+                {: RESULT = new ConstanteEntiere(c, cleft + 1) ;
+                    System.out.println("BONJOUR JE LIS : " + c);
+                :}
                 ;

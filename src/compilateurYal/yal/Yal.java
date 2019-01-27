@@ -31,7 +31,7 @@ public class Yal {
             System.err.println(ex.getMessage());
         }
         catch (Exception ex) {
-            Logger.getLogger(compilateurYal.yal.Yal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Yal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -41,7 +41,7 @@ public class Yal {
             System.err.println("\tjava -jar compilateurYal.yal.jar <fichierSource.compilateurYal.yal>") ;
             System.exit(1) ;
         }
-        new compilateurYal.yal.Yal(args[0]) ;
+        new Yal(args[0]) ;
     }
     
 }

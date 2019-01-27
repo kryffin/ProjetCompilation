@@ -1,5 +1,7 @@
 package compilateurYal.yal.arbre.expressions;
 
+import compilateurYal.yal.arbre.ArbreAbstrait;
+
 public class ConstanteEntiere extends Constante {
     
     public ConstanteEntiere(String texte, int n) {
@@ -13,6 +15,10 @@ public class ConstanteEntiere extends Constante {
         sb.append(cste) ;
         sb.append("\n") ;
         return sb.toString() ;
+    }
+
+    @Override
+    public void ajouter(ArbreAbstrait... a) {
     }
 
 }

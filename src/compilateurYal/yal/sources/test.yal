@@ -1,0 +1,10 @@
+programme test debut
+
+entier i;
+entier j;
+
+i=20;
+ecrire 30;
+ecrire i;
+
+fin
