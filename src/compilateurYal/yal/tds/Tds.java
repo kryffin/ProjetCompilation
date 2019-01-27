@@ -5,6 +5,7 @@ import compilateurYal.yal.exceptions.DoubleDeclarationException;
 import compilateurYal.yal.exceptions.VariableNonDeclareException;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Tds {
     private static Tds ourInstance = new Tds();
@@ -24,7 +25,11 @@ public class Tds {
     }
 
     public Symbol identifier(Entree e) throws VariableNonDeclareException {
-
+        System.out.println("==identifcation de " + e.getIdf() + " ==");
+        for (Map.Entry mapentry : tds.entrySet()) {
+            System.out.println("clé: " + mapentry.getKey().toString()
+                    + " | valeur: " + mapentry.getValue().toString());
+        }
         if(tds.containsKey(e)){
             return tds.get(e);
         } else{

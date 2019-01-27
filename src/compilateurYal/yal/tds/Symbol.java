@@ -11,4 +11,8 @@ public class Symbol {
     public int getDeplacement(){
         return deplacement;
     }
+
+    public String toString(){
+        return ""+deplacement;
+    }
 }

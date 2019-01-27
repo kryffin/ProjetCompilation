@@ -34,7 +34,4 @@ public class Affectation extends Instruction {
 
     }
 
-    @Override
-    public void ajouter(ArbreAbstrait... a) {
-    }
 }

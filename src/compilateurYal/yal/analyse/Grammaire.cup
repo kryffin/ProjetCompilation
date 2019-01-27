@@ -57,36 +57,24 @@ parser code {:
    
 /* Terminals (tokens returned by the scanner).  */
 
-terminal Symbol    PROGRAMME, DEBUT, FIN, POINTVIRGULE, EGALE, COUVR, CFERM;
-terminal String    CSTENTIERE;
-terminal Idf       IDF;
-   
+terminal Symbol    PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE, ENTIER ;
+terminal String    CSTENTIERE, COUVR, CFERM, EGALE, IDF;
+
+
 /* Non terminals used in the grammar section.  */
 
-non terminal ArbreAbstrait PROG, LINST, INST, LDECL, DECL, AFFECT, ECRIRE, ENTIER;
-non terminal Expression EXP ;
+non terminal ArbreAbstrait  PROG, LINST, INST, DECL, ECRITURE, AFFECT;
+non terminal Expression     EXP ;
+
 
 /* ----------------------------Grammar Section-------------------- */
- 
+
 start with PROG ;
 
-PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL:ld LINST:li  FIN
-                {:
-                    ld.ajouter(li);
-                    RESULT = ld;
-                :}
+PROG    ::=     PROGRAMME  IDF  DEBUT  LINST:li  FIN
+                {: RESULT = li ; :}
                 ;
 
-LDECL   ::=     LDECL:ld DECL:d
-                {:  ((BlocDeclaration)ld).ajouter(d);
-                    RESULT = ld;    :}
-                ;
-
-
-DECL    ::=     ENTIER IDF:i POINTVIRGULE
-                {: RESULT = new Declaration(i, ileft+1);
-                    System.out.println("Declaration");:}
-                ;
 LINST   ::=     LINST:li  INST:i
                 {: ((BlocDInstructions)li).ajouter(i) ;
                    RESULT = li ; :}
@@ -97,31 +85,42 @@ LINST   ::=     LINST:li  INST:i
                    RESULT = b ; :}
                 ;
 
-INST    ::=     ECRIRE:e
+INST    ::=     ECRITURE:e
                 {: RESULT = e; :}
-
+        |
+                DECL:d
+                {: RESULT = d; :}
         |
                 AFFECT:a
                 {: RESULT = a; :}
+        ;
 
-                ;
 
-
-AFFECT     ::=   IDF:i EGALE EXP:e POINTVIRGULE
-                {: RESULT = new Affectation(i, e, eleft+1) ;
-                System.out.println("Affectation");:}
-
-                // IDF COUVR EXP CFERM EGALE EXP POINTVIRGULE
-
-           ;
-
-ECRIRE    ::=     ECRIRE EXP:e POINTVIRGULE
+ECRITURE ::=    ECRIRE EXP:e POINTVIRGULE
                 {: RESULT = new Ecrire(e, eleft + 1) ; :}
-                ;
 
+        ;
+
+
+AFFECT   ::=    IDF:i EGALE EXP:e POINTVIRGULE
+                {:  Idf idf = new Idf(i, ileft + 1);
+                    RESULT = new Affectation(idf, e, ileft + 1); :}
+        ;
+
+DECL    ::=      ENTIER IDF:i POINTVIRGULE
+                {:
+                 RESULT = new Declaration(new Idf(i, ileft + 1) , ileft + 1);
+                 :}
+        ;
 
 EXP    ::=     CSTENTIERE:c
-                {: RESULT = new ConstanteEntiere(c, cleft + 1) ;
-                    System.out.println("BONJOUR JE LIS : " + c);
+                {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
+        |
+
+                IDF:i
+                {: System.out.println("Je lis une variable, il faut l'évaluer now");
+                    RESULT = new Idf(i, ileft + 1);
                 :}
-                ;
+        ;
+
+

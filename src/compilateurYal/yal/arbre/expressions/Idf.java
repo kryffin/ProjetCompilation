@@ -20,7 +20,7 @@ public class Idf  extends  Expression{
         return idf;
     }
 
-    @Override
-    public void ajouter(ArbreAbstrait... a) {
+    public String toString(){
+        return idf;
     }
 }

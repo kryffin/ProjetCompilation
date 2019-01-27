@@ -1,10 +1,13 @@
-programme test debut
+programme
+test
+debut
 
 entier i;
 entier j;
 
-i=20;
-ecrire 30;
-ecrire i;
+i = 30;
+
+ecrire 50;
+
 
 fin

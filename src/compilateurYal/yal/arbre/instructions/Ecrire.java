@@ -2,6 +2,7 @@ package compilateurYal.yal.arbre.instructions;
 
 import compilateurYal.yal.arbre.ArbreAbstrait;
 import compilateurYal.yal.arbre.expressions.Expression;
+import compilateurYal.yal.arbre.expressions.Idf;
 import compilateurYal.yal.exceptions.AnalyseSemantiqueException;
 
 public class Ecrire extends Instruction {
@@ -12,6 +13,7 @@ public class Ecrire extends Instruction {
         super(n) ;
         exp = e ;
     }
+
 
     @Override
     public void verifier() throws AnalyseSemantiqueException {
@@ -30,8 +32,5 @@ public class Ecrire extends Instruction {
                 "    syscall\n" ;
     }
 
-    @Override
-    public void ajouter(ArbreAbstrait... a) {
-    }
 
 }

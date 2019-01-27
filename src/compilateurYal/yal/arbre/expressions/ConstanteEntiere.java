@@ -17,8 +17,5 @@ public class ConstanteEntiere extends Constante {
         return sb.toString() ;
     }
 
-    @Override
-    public void ajouter(ArbreAbstrait... a) {
-    }
 
 }

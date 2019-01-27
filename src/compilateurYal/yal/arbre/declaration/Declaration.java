@@ -24,11 +24,8 @@ public class Declaration extends ArbreAbstrait {
 
     @Override
     public String toMIPS() {
-        return "declaration de " + idf.toMIPS();
+        return "\t#reservation de la place memoire pour "+ idf +
+                "\n\tadd $sp, $sp, -4\n";
     }
 
-    @Override
-    public void ajouter(ArbreAbstrait... a) {
-
-    }
 }

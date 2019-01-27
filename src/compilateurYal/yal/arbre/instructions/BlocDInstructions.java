@@ -1,7 +1,4 @@
-package compilateurYal.yal.arbre.instructions;
-
-import compilateurYal.yal.arbre.ArbreAbstrait;
-import compilateurYal.yal.exceptions.AnalyseSemantiqueException;
+package compilateurYal.yal.arbre;
 
 import java.util.ArrayList;
 
@@ -14,7 +11,15 @@ import java.util.ArrayList;
 public class BlocDInstructions extends ArbreAbstrait {
     
     protected ArrayList<ArbreAbstrait> programme ;
-
+    
+    protected static String zoneData = ".data\n" +
+                                            "finLigne:     .asciiz \"\\n\"\n" +
+                                            "              .align 2\n" ;
+    
+    protected static String debutCode = ".text\n" +
+                                        "main :\n" +
+                                        "\t#initialiser $s7 avec $sp\n" +
+                                        "\tmove $s7, $sp\n";
     protected static String finCode = "end :\n" +
                                       "    li $v0, 10            # retour au système\n" +
                                       "    syscall\n" ;
@@ -24,11 +29,8 @@ public class BlocDInstructions extends ArbreAbstrait {
         programme = new ArrayList<>() ;
     }
     
-    public void ajouter(ArbreAbstrait... a) {
-
-        for(ArbreAbstrait arb : a){
-            programme.add(arb) ;
-        }
+    public void ajouter(ArbreAbstrait a) {
+        programme.add(a) ;
     }
     
     @Override
@@ -37,7 +39,7 @@ public class BlocDInstructions extends ArbreAbstrait {
     }
 
     @Override
-    public void verifier() throws AnalyseSemantiqueException {
+    public void verifier() {
         for (ArbreAbstrait a : programme) {
             a.verifier() ;
         }
@@ -46,6 +48,8 @@ public class BlocDInstructions extends ArbreAbstrait {
     @Override
     public String toMIPS() {
         StringBuilder sb = new StringBuilder("") ;
+        sb.append(zoneData) ;
+        sb.append(debutCode) ;
         for (ArbreAbstrait a : programme) {
             sb.append(a.toMIPS()) ;
         }

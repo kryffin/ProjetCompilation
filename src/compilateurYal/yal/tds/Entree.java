@@ -14,4 +14,8 @@ public class Entree {
     public Idf getIdf(){
         return idf;
     }
+
+    public String toString(){
+        return idf.toString();
+    }
 }
