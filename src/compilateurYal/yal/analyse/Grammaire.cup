@@ -84,7 +84,8 @@ LDECL   ::=     LDECL:ld DECL:d
 
 
 DECL    ::=     ENTIER IDF:i POINTVIRGULE
-                {: RESULT = new Declaration(i, ileft+1); :}
+                {: RESULT = new Declaration(i, ileft+1);
+                    System.out.println("Declaration");:}
                 ;
 LINST   ::=     LINST:li  INST:i
                 {: ((BlocDInstructions)li).ajouter(i) ;
@@ -107,7 +108,8 @@ INST    ::=     ECRIRE:e
 
 
 AFFECT     ::=   IDF:i EGALE EXP:e POINTVIRGULE
-                {: RESULT = new Affectation(i, e, eleft+1) ; :}
+                {: RESULT = new Affectation(i, e, eleft+1) ;
+                System.out.println("Affectation");:}
 
                 // IDF COUVR EXP CFERM EGALE EXP POINTVIRGULE
 
