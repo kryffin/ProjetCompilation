@@ -18,6 +18,13 @@ public abstract class Constante extends Expression {
     }
 
     /**
+     * @return texte représentant la constante
+     */
+    public String getCste () {
+        return cste;
+    }
+
+    /**
      * vérifie la constante
      */
     @Override

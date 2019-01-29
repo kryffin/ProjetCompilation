@@ -18,9 +18,7 @@ public class Addition extends ExpressionArithmetique {
 
     @Override
     public String toMIPS() {
-        return  "                #addition\n" +
-                expGauche.toMIPS() +
-                "";
+        return null;
     }
 
 }
