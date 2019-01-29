@@ -2,13 +2,24 @@ package compilateurYal.arbre.expressions;
 
 public abstract class Constante extends Expression {
 
+    /**
+     * texte représentant la constante
+     */
     protected String cste ;
-    
+
+    /**
+     * Constructeur par texte de la constante et numéro de ligne
+     * @param texte texte représentant la constante
+     * @param n ligne
+     */
     protected Constante(String texte, int n) {
         super(n) ;
         cste = texte ;
     }
-    
+
+    /**
+     * vérifie la constante
+     */
     @Override
     public void verifier() {
     }

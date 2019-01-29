@@ -8,7 +8,6 @@ import compilateurYal.analyse.AnalyseurLexical;
 import compilateurYal.analyse.AnalyseurSyntaxique;
 import compilateurYal.arbre.ArbreAbstrait;
 import compilateurYal.exceptions.AnalyseException;
-import compilateurYal.tds.TableDesSymboles;
 
 public class Yal {
     
@@ -19,8 +18,6 @@ public class Yal {
 
             arbre.verifier() ;
             System.out.println("COMPILATION OK") ;
-
-            System.out.println(TableDesSymboles.getInstance());
 
             String nomSortie = nomFichier.replaceAll("[.]yal", ".mips") ;
             PrintWriter flot = new PrintWriter(new BufferedWriter(new FileWriter(nomSortie))) ;

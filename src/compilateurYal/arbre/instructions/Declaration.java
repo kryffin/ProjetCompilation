@@ -5,26 +5,42 @@ import compilateurYal.arbre.ArbreAbstrait;
 import compilateurYal.arbre.expressions.IDF;
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.EntreeVariable;
-import compilateurYal.tds.symboles.Symbole;
 import compilateurYal.tds.symboles.SymboleVariable;
 
 public class Declaration extends ArbreAbstrait {
 
+    /**
+     * identifiant de la variable à déclarer
+     */
     private IDF idf;
 
+    /**
+     * Constructeur par identifiant et numéro de ligne
+     * @param idf identifiant
+     * @param n ligne
+     */
     public Declaration (IDF idf, int n) {
         super(n);
         this.idf = idf;
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(TableDesSymboles.getInstance().getTailleZoneVariable()));
-        System.out.println("Ajout de " + idf + " à la place " + GestionnaireTailleZoneVariable.getInstance().getTailleZoneVariable());
+
+        //ajout de la variable dans la table des symboles
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(TableDesSymboles.getInstance().getTailleZoneVariable()), n);
+
+        //décrémentation de la pile des variables
         GestionnaireTailleZoneVariable.getInstance().incrementerTailleZoneVariable();
     }
 
+    /**
+     * vérifie l'identifiant
+     */
     @Override
     public void verifier() {
         idf.verifier();
     }
 
+    /**
+     * @return instruction d'allocation dans la pile
+     */
     @Override
     public String toMIPS() {
         return  "                #entier " + idf + "\n" +
