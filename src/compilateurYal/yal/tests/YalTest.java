@@ -1,4 +1,4 @@
-package compilateurYal.yal;
+package compilateurYal.yal.tests;
 
 class YalTest {
 

@@ -56,20 +56,24 @@ parser code {:
    
 /* Terminals (tokens returned by the scanner).  */
 
-terminal Symbol    PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE ;
+terminal Symbol    PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE, ENTIER, EGALE;
 terminal String    IDF, CSTENTIERE ;
    
 /* Non terminals used in the grammar section.  */
 
-non terminal ArbreAbstrait PROG, LINST, INST ;
+non terminal ArbreAbstrait PROG, LINST, INST, LDECL, DECL_VAR, ECR, AFFECT ;
 non terminal Expression EXP ;
 
-/* ----------------------------Grammar Section-------------------- */
+
+/* -----------------------Grammar Section-------------------- */
  
 start with PROG ;
 
-PROG    ::=     PROGRAMME  IDF  DEBUT  LINST:li  FIN
-                {: RESULT = li ; :}
+PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL:ld  LINST:li  FIN
+                {: Programme p = new Programme (ldleft+1);
+                    p.ajouterBlocDeDeclarations(ld);
+                    p.ajouterBlocDInstruction(li);
+                    RESULT = p ; :}
                 ;
 
 LINST   ::=     LINST:li  INST:i
@@ -81,11 +85,35 @@ LINST   ::=     LINST:li  INST:i
                    b.ajouter(i) ;
                    RESULT = b ; :}
                 ;
+LDECL   ::=     LDECL:ld DECL_VAR:dv
+                {: ((BlocDeDeclarations)ld).ajouter(dv);
+                    RESULT = ld; :}
 
-INST    ::=     ECRIRE EXP:e POINTVIRGULE
+        |       DECL_VAR:dv
+                {:  BlocDeDeclarations b =  new BlocDeDeclarations(dvleft + 1);
+                    b.ajouter(dv);
+                    RESULT = b; :}
+                ;
+
+INST    ::=     ECR:e
+                {: RESULT = e; :}
+
+        |       AFFECT:a
+                {: RESULT = a; :}
+                ;
+
+ECR     ::=     ECRIRE EXP:e POINTVIRGULE
                 {: RESULT = new Ecrire(e, eleft + 1) ; :}
                 ;
-    
+
+AFFECT  ::=     IDF:i EGALE EXP:e POINTVIRGULE
+                {: RESULT = new Affectation( new Idf(i, ileft + 1), e, ileft+1); :}
+                ;
+
+DECL_VAR    ::=     ENTIER IDF:i POINTVIRGULE
+                {: RESULT = new Declaration( new Idf(i, ileft + 1), ileft + 1 ); :}
+                ;
+
 EXP    ::=     CSTENTIERE:c
                 {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
                 ;
