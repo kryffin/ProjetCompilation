@@ -18,7 +18,13 @@ public class Addition extends ExpressionArithmetique {
 
     @Override
     public String toMIPS() {
-        return null;
+        return  super.toMIPS() +
+                "    add $v0, $t8, $v0\n";
+    }
+
+    @Override
+    public String toString() {
+        return "( " + expGauche + " + " + expDroite + " )";
     }
 
 }

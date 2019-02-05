@@ -52,4 +52,22 @@ public abstract class ExpressionBinaire extends Expression {
         expGauche.verifier();
         expDroite.verifier();
     }
+
+    @Override
+    public String toMIPS() {
+
+        if (expDroite.estConstante()) {
+            return  expGauche.toMIPS() +
+                    "    move $t8, $v0\n" +
+                    expDroite.toMIPS();
+        }
+
+        return  expGauche.toMIPS() +
+                "    sw $v0, ($sp)\n" +
+                "    add $sp, $sp, -4\n" +
+                expDroite.toMIPS() +
+                "    add $sp, $sp, 4\n" +
+                "    lw $t8, ($sp)\n";
+    }
+
 }

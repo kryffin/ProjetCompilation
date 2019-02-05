@@ -12,4 +12,10 @@ public abstract class ExpressionArithmetique extends ExpressionBinaire {
         super(n);
     }
 
+    @Override
+    public String toMIPS() {
+
+        return super.toMIPS();
+
+    }
 }

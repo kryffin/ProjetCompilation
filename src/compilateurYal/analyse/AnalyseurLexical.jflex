@@ -72,6 +72,28 @@ commentaire = [/][/].*
 
 "="                     { return symbol(CodesLexicaux.EGAL); }
 
+"!"                     { return symbol(CodesLexicaux.EXCLA); }
+
+"<"                     { return symbol(CodesLexicaux.INF); }
+
+">"                     { return symbol(CodesLexicaux.SUP); }
+
+"non"                   { return symbol(CodesLexicaux.NON); }
+
+"si"                    { return symbol(CodesLexicaux.SI); }
+
+"alors"                 { return symbol(CodesLexicaux.ALORS); }
+
+"sinon"                 { return symbol(CodesLexicaux.SINON); }
+
+"finsi"                 { return symbol(CodesLexicaux.FINSI); }
+
+"tantque"               { return symbol(CodesLexicaux.TANTQUE); }
+
+"repeter"               { return symbol(CodesLexicaux.REPETER); }
+
+"fintantque"            { return symbol(CodesLexicaux.FINTANTQUE); }
+
 {csteE}      	        { return symbol(CodesLexicaux.CSTENTIERE, yytext()); }
 
 {idf}      	            { return symbol(CodesLexicaux.IDF, yytext()); }

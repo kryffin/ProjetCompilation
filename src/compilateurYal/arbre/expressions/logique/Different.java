@@ -1,8 +1,8 @@
-package compilateurYal.arbre.expressions.arithmetique;
+package compilateurYal.arbre.expressions.logique;
 
 import compilateurYal.arbre.expressions.Expression;
 
-public class Multiplication extends ExpressionArithmetique {
+public class Different extends ExpressionLogique {
 
     /**
      * Constructeur par expression gauche, droite et numéro de ligne
@@ -10,22 +10,24 @@ public class Multiplication extends ExpressionArithmetique {
      * @param expDroite expression droite
      * @param n ligne
      */
-    public Multiplication(Expression expGauche, Expression expDroite, int n) {
+    public Different(Expression expGauche, Expression expDroite, int n) {
         super(n);
         this.expGauche = expGauche;
         this.expDroite = expDroite;
     }
 
+    /**
+     * @return code mips de la différence entre deux expressions
+     */
     @Override
     public String toMIPS() {
         return  super.toMIPS() +
-                "    mult $t8, $v0\n" +
-                "    mflo $v0\n";
+                "    sne $v0, $t8, $v0\n";
     }
 
     @Override
     public String toString() {
-        return "( " + expGauche + " * " + expDroite + " )";
+        return "( " + expGauche + " != " + expDroite + " )";
     }
 
 }

@@ -18,6 +18,14 @@ public class Division extends ExpressionArithmetique {
 
     @Override
     public String toMIPS() {
-        return null;
+        return  super.toMIPS() +
+                "    div $t8, $v0\n" +
+                "    mflo $v0\n";
     }
+
+    @Override
+    public String toString() {
+        return "( " + expGauche + " / " + expDroite + " )";
+    }
+
 }
