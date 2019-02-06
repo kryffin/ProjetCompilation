@@ -74,9 +74,15 @@ precedence left PLUS, MOINS, FOIS, DIV, INF, SUP, EGAL, EXCLA;
  
 start with PROG ;
 
-PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld  LINST:li  FIN
+PROG    ::=     PROGRAMME IDF DEBUT LDECL:ld LINST:li FIN
                 {:  Programme p = new Programme(ldleft + 1);
                     p.ajouterDeclarations(ld);
+                    p.ajouterInstructions(li);
+                    RESULT = p; :}
+        |
+                PROGRAMME IDF DEBUT LINST:li FIN
+                {:  Programme p = new Programme(lileft + 1);
+                    p.ajouterDeclarations(new BlocDeDeclarations(0));
                     p.ajouterInstructions(li);
                     RESULT = p; :}
                 ;
