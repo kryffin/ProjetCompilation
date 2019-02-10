@@ -78,7 +78,7 @@ public class IDF extends Expression {
 
         //si le type n'est pas reconnu on lance une erreur
         if (type == Expression.NON_RECONNU) {
-            throw new AnalyseSemantiqueException(noLigne, "type de " + nom + " non reconnu");
+            new AnalyseSemantiqueException(noLigne, "type de " + nom + " non reconnu").printStackTrace();
         }
 
         //si la variable est booléenne l'expression est donc logique

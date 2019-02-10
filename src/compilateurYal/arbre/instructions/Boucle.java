@@ -2,6 +2,7 @@ package compilateurYal.arbre.instructions;
 
 import compilateurYal.CompteurBoucles;
 import compilateurYal.CompteurConditions;
+import compilateurYal.Yal;
 import compilateurYal.arbre.ArbreAbstrait;
 import compilateurYal.arbre.expressions.Expression;
 import compilateurYal.exceptions.AnalyseSemantiqueException;
@@ -47,7 +48,7 @@ public class Boucle extends Instruction {
 
         //vérification que l'expression testée est bien logique
         if (!exp.estLogique()) {
-            throw new AnalyseSemantiqueException(noLigne, "expression évaluée dans la boucle " + cpt + " n'est pas booléenne");
+            new AnalyseSemantiqueException(noLigne, "expression évaluée dans la boucle " + cpt + " n'est pas booléenne");
         }
     }
 

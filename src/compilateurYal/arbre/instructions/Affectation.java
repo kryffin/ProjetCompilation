@@ -1,5 +1,6 @@
 package compilateurYal.arbre.instructions;
 
+import compilateurYal.Yal;
 import compilateurYal.arbre.expressions.Expression;
 import compilateurYal.arbre.expressions.IDF;
 import compilateurYal.exceptions.AnalyseSemantiqueException;
@@ -37,17 +38,16 @@ public class Affectation extends Instruction {
         exp.verifier();
 
         /* tests sur l'affectation de mauvais types */
-
         if (idf.getType() == Expression.ENTIER && exp.estLogique()) {
-            throw new AnalyseSemantiqueException(noLigne, "affectation d'une expression logique " + exp + " dans une variable entière " + idf);
+            new AnalyseSemantiqueException(noLigne, "affectation d'une expression logique " + exp + " dans une variable entière " + idf);
         }
 
         if (idf.getType() == Expression.BOOLEEN && !exp.estLogique()) {
-            throw new AnalyseSemantiqueException(noLigne, "affectation d'une expression non logique " + exp + " dans une variable logique " + idf);
+            new AnalyseSemantiqueException(noLigne, "affectation d'une expression non logique " + exp + " dans une variable logique " + idf);
         }
 
         if (idf.getType() == Expression.BOOLEEN && exp.estConstante()) {
-            throw new AnalyseSemantiqueException(noLigne, "affectation d'une constante " + exp + " dans une variable logique " + idf);
+            new AnalyseSemantiqueException(noLigne, "affectation d'une constante " + exp + " dans une variable logique " + idf);
         }
     }
 

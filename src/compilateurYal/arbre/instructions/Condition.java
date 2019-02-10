@@ -1,6 +1,7 @@
 package compilateurYal.arbre.instructions;
 
 import compilateurYal.CompteurConditions;
+import compilateurYal.Yal;
 import compilateurYal.arbre.ArbreAbstrait;
 import compilateurYal.arbre.BlocDInstructions;
 import compilateurYal.arbre.expressions.Expression;
@@ -59,7 +60,7 @@ public class Condition extends Instruction {
 
         //vérification que l'expression testée est bien logique
         if (!exp.estLogique()) {
-            throw new AnalyseSemantiqueException(noLigne, "expression évaluée dans la condition " + cpt + " n'est pas booléenne");
+            new AnalyseSemantiqueException(noLigne, "expression évaluée dans la condition " + cpt + " n'est pas booléenne");
         }
     }
 

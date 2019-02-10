@@ -10,19 +10,24 @@ import compilateurYal.arbre.ArbreAbstrait;
 import compilateurYal.exceptions.AnalyseException;
 
 public class Yal {
+
+    public static boolean exception = false;
     
     public Yal(String nomFichier) {
         try {
             AnalyseurSyntaxique analyseur = new AnalyseurSyntaxique(new AnalyseurLexical(new FileReader(nomFichier)));
             ArbreAbstrait arbre = (ArbreAbstrait) analyseur.parse().value;
 
-            arbre.verifier() ;
-            System.out.println("COMPILATION OK") ;
+            arbre.verifier();
 
-            String nomSortie = nomFichier.replaceAll("[.]yal", ".mips") ;
-            PrintWriter flot = new PrintWriter(new BufferedWriter(new FileWriter(nomSortie))) ;
-            flot.println(arbre.toMIPS());
-            flot.close();
+            if (!exception) {
+                System.out.println("COMPILATION OK") ;
+
+                String nomSortie = nomFichier.replaceAll("[.]yal", ".mips") ;
+                PrintWriter flot = new PrintWriter(new BufferedWriter(new FileWriter(nomSortie))) ;
+                flot.println(arbre.toMIPS());
+                flot.close();
+            }
         }
         catch (FileNotFoundException ex) {
             System.err.println("Fichier " + nomFichier + " inexistant") ;

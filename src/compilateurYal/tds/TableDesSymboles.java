@@ -1,6 +1,7 @@
 package compilateurYal.tds;
 
 import compilateurYal.GestionnaireTailleZoneVariable;
+import compilateurYal.Yal;
 import compilateurYal.exceptions.AnalyseSemantiqueException;
 import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.symboles.Symbole;
@@ -43,7 +44,7 @@ public class TableDesSymboles {
     public void ajouter (Entree e, Symbole s, int n) throws AnalyseSemantiqueException {
         //si la table contient la clé il y a donc une double déclaration de cette Entrée, on lance donc une erreur, sinon on l'ajoute
         if (tds.containsKey(e)) {
-            throw new AnalyseSemantiqueException(n, "double déclaration de la variable " + e.getNom());
+            new AnalyseSemantiqueException(n, "double déclaration de la variable " + e.getNom()).printStackTrace();
         } else {
             tds.put(e, s);
         }
@@ -61,7 +62,8 @@ public class TableDesSymboles {
 
         //si le symbole est null on ne l'a donc pas retrouvé dans la table, on lance donc une erreur, sinon on renvoie le symbole
         if (s == null) {
-            throw new AnalyseSemantiqueException(n, "variable " + e.getNom() + " non déclarée");
+            new AnalyseSemantiqueException(n, "variable " + e.getNom() + " non déclarée");
+            return null;
         } else {
             return s;
         }
