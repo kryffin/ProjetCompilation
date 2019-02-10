@@ -53,12 +53,14 @@ public class Condition extends Instruction {
      */
     @Override
     public void verifier() {
-        if (!exp.estLogique()) {
-            throw new AnalyseSemantiqueException(noLigne, "expression évaluée dans la condition " + cpt + " n'est pas booléenne");
-        }
         exp.verifier();
         si.verifier();
         sinon.verifier();
+
+        //vérification que l'expression testée est bien logique
+        if (!exp.estLogique()) {
+            throw new AnalyseSemantiqueException(noLigne, "expression évaluée dans la condition " + cpt + " n'est pas booléenne");
+        }
     }
 
     @Override

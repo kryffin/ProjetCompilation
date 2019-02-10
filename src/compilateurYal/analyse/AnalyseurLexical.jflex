@@ -52,6 +52,8 @@ commentaire = [/][/].*
 
 "entier"                { return symbol(CodesLexicaux.ENTIER); }
 
+"booleen"               { return symbol(CodesLexicaux.BOOLEEN); }
+
 ";"                     { return symbol(CodesLexicaux.POINTVIRGULE); }
 
 "+"                     { return symbol(CodesLexicaux.PLUS); }
@@ -80,9 +82,9 @@ commentaire = [/][/].*
 
 "non"                   { return symbol(CodesLexicaux.NON); }
 
-"et"                   { return symbol(CodesLexicaux.ET); }
+"et"                    { return symbol(CodesLexicaux.ET); }
 
-"ou"                   { return symbol(CodesLexicaux.OU); }
+"ou"                    { return symbol(CodesLexicaux.OU); }
 
 "si"                    { return symbol(CodesLexicaux.SI); }
 

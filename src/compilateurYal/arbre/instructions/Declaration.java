@@ -2,6 +2,7 @@ package compilateurYal.arbre.instructions;
 
 import compilateurYal.GestionnaireTailleZoneVariable;
 import compilateurYal.arbre.ArbreAbstrait;
+import compilateurYal.arbre.expressions.Expression;
 import compilateurYal.arbre.expressions.IDF;
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.EntreeVariable;
@@ -24,7 +25,7 @@ public class Declaration extends ArbreAbstrait {
         this.idf = idf;
 
         //ajout de la variable dans la table des symboles
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(TableDesSymboles.getInstance().getTailleZoneVariable()), n);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(idf.getType(), TableDesSymboles.getInstance().getTailleZoneVariable()), n);
 
         //décrémentation de la pile des variables
         GestionnaireTailleZoneVariable.getInstance().incrementerTailleZoneVariable();
@@ -43,7 +44,7 @@ public class Declaration extends ArbreAbstrait {
      */
     @Override
     public String toMIPS() {
-        return  "                #entier " + idf + "\n" +
+        return  "                #variable " + idf + "\n" +
                 "    add $sp, $sp, -4\n\n";
     }
 }

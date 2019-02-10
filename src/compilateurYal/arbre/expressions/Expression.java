@@ -5,6 +5,21 @@ import compilateurYal.arbre.ArbreAbstrait;
 public abstract class Expression extends ArbreAbstrait {
 
     /**
+     * constante statique identifiant les type non reconnus
+     */
+    public final static short NON_RECONNU = -1;
+
+    /**
+     * constante statique identifiant les entiers
+     */
+    public final static short ENTIER = 0;
+
+    /**
+     * constante statique identifiant les booléens
+     */
+    public final static short BOOLEEN = 1;
+
+    /**
      * défini si une expression est constante ou non
      */
     protected boolean estConstante = false;

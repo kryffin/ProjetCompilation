@@ -42,11 +42,13 @@ public class Boucle extends Instruction {
      */
     @Override
     public void verifier() {
+        exp.verifier();
+        tantque.verifier();
+
+        //vérification que l'expression testée est bien logique
         if (!exp.estLogique()) {
             throw new AnalyseSemantiqueException(noLigne, "expression évaluée dans la boucle " + cpt + " n'est pas booléenne");
         }
-        exp.verifier();
-        tantque.verifier();
     }
 
     /**
