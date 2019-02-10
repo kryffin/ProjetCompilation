@@ -82,7 +82,7 @@ PROG    ::=     PROGRAMME IDF DEBUT LDECL:ld LINST:li FIN
         |
                 PROGRAMME IDF DEBUT LINST:li FIN
                 {:  Programme p = new Programme(lileft + 1);
-                    p.ajouterDeclarations(new BlocDeDeclarations(0));
+                    p.ajouterDeclarations(new BlocDeDeclarations(lileft + 1));
                     p.ajouterInstructions(li);
                     RESULT = p; :}
                 ;
@@ -144,6 +144,12 @@ CONDITION ::=   SI EXP:e ALORS LINST:li SINON LINST:sli FINSI
         |
                 SI EXP:e ALORS LINST:li FINSI
                 {: RESULT = new Condition(e, li, null, eleft + 1); :}
+        |
+                SI EXP:e ALORS SINON LINST:sli FINSI
+                {: RESULT = new Condition(e, new BlocDInstructions(eleft + 1), sli, eleft + 1); :}
+        |
+                SI EXP:e ALORS FINSI
+                {: RESULT = new Condition(e, new BlocDInstructions(eleft + 1), null, eleft + 1); :}
                 ;
 
 BOUCLE  ::=     TANTQUE EXP:e REPETER LINST:li FINTANTQUE
