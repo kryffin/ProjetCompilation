@@ -582,92 +582,6 @@ class YalTest {
     }
 
     @Test
-    void testInferieurEgal () {
-
-        String resultat;
-
-        //infériorité ou égalité entre 2 variables
-        InferieurEgal inf = new InferieurEgal(new IDF("a", 0), new IDF("b", 0), 0);
-        inf.verifier();
-
-        resultat =  "    lw $v0, 0($s7)\n" +
-                    "    sw $v0, ($sp)\n" +
-                    "    add $sp, $sp, -4\n" +
-                    "    lw $v0, -4($s7)\n" +
-                    "    add $sp, $sp, 4\n" +
-                    "    lw $t8, ($sp)\n" +
-                    "    sle $v0, $t8, $v0\n";
-
-        assert(inf.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une infériorité ou égalité";
-
-        //infériorité ou égalité entre une variable et une constante
-        inf = new InferieurEgal(new IDF("c", 0), new ConstanteEntiere("1", 0), 0);
-        inf.verifier();
-
-        resultat =  "    lw $v0, -8($s7)\n" +
-                    "    move $t8, $v0\n" +
-                    "    li $v0, 1\n" +
-                    "    sle $v0, $t8, $v0\n";
-
-        assert(inf.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une infériorité ou égalité";
-
-        //infériorité ou égalité entre deux variables
-        inf = new InferieurEgal(new ConstanteEntiere("0", 0), new ConstanteEntiere("1", 0), 0);
-        inf.verifier();
-
-        resultat =  "    li $v0, 0\n" +
-                    "    move $t8, $v0\n" +
-                    "    li $v0, 1\n" +
-                    "    sle $v0, $t8, $v0\n";
-
-        assert(inf.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une infériorité ou égalité";
-
-    }
-
-    @Test
-    void testSuperieurEgal () {
-
-        String resultat;
-
-        //supériorité ou égalité entre 2 variables
-        SuperieurEgal sup = new SuperieurEgal(new IDF("a", 0), new IDF("b", 0), 0);
-        sup.verifier();
-
-        resultat =  "    lw $v0, 0($s7)\n" +
-                    "    sw $v0, ($sp)\n" +
-                    "    add $sp, $sp, -4\n" +
-                    "    lw $v0, -4($s7)\n" +
-                    "    add $sp, $sp, 4\n" +
-                    "    lw $t8, ($sp)\n" +
-                    "    sge $v0, $t8, $v0\n";
-
-        assert(sup.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une supériorité ou égalité";
-
-        //supériorité ou égalité entre une variable et une constante
-        sup = new SuperieurEgal(new IDF("c", 0), new ConstanteEntiere("1", 0), 0);
-        sup.verifier();
-
-        resultat =  "    lw $v0, -8($s7)\n" +
-                    "    move $t8, $v0\n" +
-                    "    li $v0, 1\n" +
-                    "    sge $v0, $t8, $v0\n";
-
-        assert(sup.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une supériorité ou égalité";
-
-        //supériorité ou égalité entre deux variables
-        sup = new SuperieurEgal(new ConstanteEntiere("0", 0), new ConstanteEntiere("1", 0), 0);
-        sup.verifier();
-
-        resultat =  "    li $v0, 0\n" +
-                    "    move $t8, $v0\n" +
-                    "    li $v0, 1\n" +
-                    "    sge $v0, $t8, $v0\n";
-
-        assert(sup.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une supériorité ou égalité";
-
-    }
-
-    @Test
     void testNegation () {
 
         String resultat;
@@ -696,8 +610,6 @@ class YalTest {
         testDifferent();
         testInferieur();
         testSuperieur();
-        testInferieurEgal();
-        testSuperieurEgal();
     }
 
     @Test

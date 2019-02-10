@@ -194,12 +194,6 @@ EXP     ::=     CSTENTIERE:c
                 EXP:e1 SUP EXP:e2
                 {: RESULT = new Superieur(e1, e2, e1left + 1); :}
         |
-                EXP:e1 INF EGAL EXP:e2
-                {: RESULT = new InferieurEgal(e1, e2, e1left + 1); :}
-        |
-                EXP:e1 SUP EGAL EXP:e2
-                {: RESULT = new SuperieurEgal(e1, e2, e1left + 1); :}
-        |
                 EXP:e1 EGAL EGAL EXP:e2
                 {: RESULT = new Egal(e1, e2, e1left + 1); :}
         |
