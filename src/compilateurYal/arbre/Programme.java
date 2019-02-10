@@ -17,7 +17,9 @@ public class Programme extends ArbreAbstrait {
      */
     protected static String zoneData =  ".data\n" +
                                         "finLigne:     .asciiz \"\\n\"\n" +
-                                        "              .align 2\n" ;
+                                        "vrai:         .asciiz \"vrai\"\n" +
+                                        "faux:         .asciiz \"faux\"\n" +
+                                        "              .align 2\n";
 
     /**
      * début du code en mips
