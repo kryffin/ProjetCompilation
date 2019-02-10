@@ -1,8 +1,7 @@
 package compilateurYal.tds;
 
 import compilateurYal.GestionnaireTailleZoneVariable;
-import compilateurYal.exceptions.DoubleDeclarationException;
-import compilateurYal.exceptions.VariableNonDeclareException;
+import compilateurYal.exceptions.AnalyseSemantiqueException;
 import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.symboles.Symbole;
 
@@ -39,12 +38,12 @@ public class TableDesSymboles {
      * @param e Entrée
      * @param s Symbole
      * @param n numéro de la ligne dans le fichier .yal pour lancer l'erreur
-     * @throws DoubleDeclarationException en cas de double déclaration d'une variable
+     * @throws AnalyseSemantiqueException en cas de double déclaration d'une variable
      */
-    public void ajouter (Entree e, Symbole s, int n) throws DoubleDeclarationException {
+    public void ajouter (Entree e, Symbole s, int n) throws AnalyseSemantiqueException {
         //si la table contient la clé il y a donc une double déclaration de cette Entrée, on lance donc une erreur, sinon on l'ajoute
         if (tds.containsKey(e)) {
-            throw new DoubleDeclarationException(e, n);
+            throw new AnalyseSemantiqueException(n, "double déclaration de la variable " + e.getNom());
         } else {
             tds.put(e, s);
         }
@@ -55,14 +54,14 @@ public class TableDesSymboles {
      * @param e Entrée à retrouver
      * @param n numéro de la ligne dans le fichier .yal pour lancer l'erreur
      * @return le symbole correspondant à l'Entrée dans la table
-     * @throws VariableNonDeclareException en case de non déclaration de la variable qu'on veut récupérer
+     * @throws AnalyseSemantiqueException en cas de non déclaration de la variable qu'on veut récupérer
      */
-    public Symbole identifier (Entree e, int n) throws VariableNonDeclareException {
+    public Symbole identifier (Entree e, int n) throws AnalyseSemantiqueException {
         Symbole s = tds.get(e);
 
         //si le symbole est null on ne l'a donc pas retrouvé dans la table, on lance donc une erreur, sinon on renvoie le symbole
         if (s == null) {
-            throw new VariableNonDeclareException(e, n);
+            throw new AnalyseSemantiqueException(n, "variable " + e.getNom() + " non déclarée");
         } else {
             return s;
         }

@@ -4,6 +4,7 @@ import compilateurYal.CompteurBoucles;
 import compilateurYal.CompteurConditions;
 import compilateurYal.arbre.ArbreAbstrait;
 import compilateurYal.arbre.expressions.Expression;
+import compilateurYal.exceptions.AnalyseSemantiqueException;
 
 public class Boucle extends Instruction {
 
@@ -41,6 +42,9 @@ public class Boucle extends Instruction {
      */
     @Override
     public void verifier() {
+        if (!exp.estLogique()) {
+            throw new AnalyseSemantiqueException(noLigne, "expression évaluée dans la boucle " + cpt + " n'est pas booléenne");
+        }
         exp.verifier();
         tantque.verifier();
     }

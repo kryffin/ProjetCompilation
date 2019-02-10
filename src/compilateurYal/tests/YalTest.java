@@ -1,6 +1,5 @@
 package compilateurYal.tests;
 
-import compilateurYal.arbre.BlocDInstructions;
 import compilateurYal.arbre.expressions.ConstanteEntiere;
 import compilateurYal.arbre.expressions.IDF;
 import compilateurYal.arbre.expressions.arithmetique.Addition;
@@ -9,8 +8,7 @@ import compilateurYal.arbre.expressions.arithmetique.Multiplication;
 import compilateurYal.arbre.expressions.arithmetique.Soustraction;
 import compilateurYal.arbre.expressions.logique.*;
 import compilateurYal.arbre.instructions.*;
-import compilateurYal.exceptions.DoubleDeclarationException;
-import compilateurYal.exceptions.VariableNonDeclareException;
+import compilateurYal.exceptions.AnalyseSemantiqueException;
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.entrees.EntreeVariable;
@@ -176,7 +174,7 @@ class YalTest {
 
         try {
             TableDesSymboles.getInstance().identifier(new EntreeVariable("e"), 0);
-        } catch (VariableNonDeclareException e) {
+        } catch (AnalyseSemantiqueException e) {
             exception = true;
         }
 
@@ -187,7 +185,7 @@ class YalTest {
 
         try {
             TableDesSymboles.getInstance().ajouter(new EntreeVariable("a"), new SymboleVariable(0), 0);
-        } catch (DoubleDeclarationException e) {
+        } catch (AnalyseSemantiqueException e) {
             exception = true;
         }
 

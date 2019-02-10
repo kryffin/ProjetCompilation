@@ -60,7 +60,8 @@ parser code {:
 
 terminal Symbol     PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE, LIRE, ENTIER, EGAL,
                     PAR_OUV, PAR_FER, CRO_OUV, CRO_FER, PLUS, MOINS, FOIS, DIV,
-                    EXCLA, INF, SUP, NON, SI, ALORS, SINON, FINSI, TANTQUE, REPETER, FINTANTQUE;
+                    EXCLA, INF, SUP, NON, ET, OU,
+                    SI, ALORS, SINON, FINSI, TANTQUE, REPETER, FINTANTQUE;
 terminal String     IDF, CSTENTIERE;
 
 /* Non terminals used in the grammar section.  */
@@ -68,7 +69,7 @@ terminal String     IDF, CSTENTIERE;
 non terminal ArbreAbstrait PROG, LINST, INST, LDECL, DECL_VAR, ECR, LECTURE, AFF, CONDITION, BOUCLE ;
 non terminal Expression EXP, OPER;
 
-precedence left PLUS, MOINS, FOIS, DIV, INF, SUP, EGAL, EXCLA;
+precedence left PLUS, MOINS, FOIS, DIV, INF, SUP, EGAL, EXCLA, ET, OU;
 
 /* ----------------------------Grammar Section-------------------- */
  
@@ -159,21 +160,15 @@ BOUCLE  ::=     TANTQUE EXP:e REPETER LINST:li FINTANTQUE
 EXP     ::=     CSTENTIERE:c
                 {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
         |
-                PAR_OUV EXP:e PAR_FER
-                {: RESULT = e; :}
-        |
                 IDF:i
                 {:  IDF idf = new IDF(i, ileft + 1);
                     RESULT = idf; :}
         |
-                MOINS EXP:e
-                {: RESULT = new Soustraction(new ConstanteEntiere("0", eleft + 1), e, eleft + 1); :}
+                PAR_OUV EXP:e PAR_FER
+                {: RESULT = e; :}
         |
-                EXP:e1 PLUS EXP:e2
-                {: RESULT = new Addition(e1, e2, e1left + 1); :}
-        |
-                EXP:e1 MOINS EXP:e2
-                {: RESULT = new Soustraction(e1, e2, e1left + 1); :}
+                NON EXP:e
+                {: RESULT = new Negation(e, eleft + 1); :}
         |
                 EXP:e1 FOIS EXP:e2
                 {: RESULT = new Multiplication(e1, e2, e1left + 1); :}
@@ -181,11 +176,14 @@ EXP     ::=     CSTENTIERE:c
                 EXP:e1 DIV EXP:e2
                 {: RESULT = new Division(e1, e2, e1left + 1); :}
         |
-                EXP:e1 EGAL EGAL EXP:e2
-                {: RESULT = new Egal(e1, e2, e1left + 1); :}
+                EXP:e1 PLUS EXP:e2
+                {: RESULT = new Addition(e1, e2, e1left + 1); :}
         |
-                EXP:e1 EXCLA EGAL EXP:e2
-                {: RESULT = new Different(e1, e2, e1left + 1); :}
+                EXP:e1 MOINS EXP:e2
+                {: RESULT = new Soustraction(e1, e2, e1left + 1); :}
+        |
+                MOINS EXP:e
+                {: RESULT = new Soustraction(new ConstanteEntiere("0", eleft + 1), e, eleft + 1); :}
         |
                 EXP:e1 INF EXP:e2
                 {: RESULT = new Inferieur(e1, e2, e1left + 1); :}
@@ -199,6 +197,15 @@ EXP     ::=     CSTENTIERE:c
                 EXP:e1 SUP EGAL EXP:e2
                 {: RESULT = new SuperieurEgal(e1, e2, e1left + 1); :}
         |
-                NON EXP:e
-                {: RESULT = new Negation(e, eleft + 1); :}
+                EXP:e1 EGAL EGAL EXP:e2
+                {: RESULT = new Egal(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 EXCLA EGAL EXP:e2
+                {: RESULT = new Different(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 ET EXP:e2
+                {: RESULT = new Et(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 OU EXP:e2
+                {: RESULT = new Ou(e1, e2, e1left + 1); :}
                 ;

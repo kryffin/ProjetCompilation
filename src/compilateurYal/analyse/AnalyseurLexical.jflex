@@ -80,6 +80,10 @@ commentaire = [/][/].*
 
 "non"                   { return symbol(CodesLexicaux.NON); }
 
+"et"                   { return symbol(CodesLexicaux.ET); }
+
+"ou"                   { return symbol(CodesLexicaux.OU); }
+
 "si"                    { return symbol(CodesLexicaux.SI); }
 
 "alors"                 { return symbol(CodesLexicaux.ALORS); }

@@ -4,6 +4,7 @@ import compilateurYal.CompteurConditions;
 import compilateurYal.arbre.ArbreAbstrait;
 import compilateurYal.arbre.BlocDInstructions;
 import compilateurYal.arbre.expressions.Expression;
+import compilateurYal.exceptions.AnalyseSemantiqueException;
 
 public class Condition extends Instruction {
 
@@ -52,6 +53,9 @@ public class Condition extends Instruction {
      */
     @Override
     public void verifier() {
+        if (!exp.estLogique()) {
+            throw new AnalyseSemantiqueException(noLigne, "expression évaluée dans la condition " + cpt + " n'est pas booléenne");
+        }
         exp.verifier();
         si.verifier();
         sinon.verifier();
