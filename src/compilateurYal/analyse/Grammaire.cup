@@ -1,0 +1,205 @@
+package compilateurYal.analyse ;
+
+import java.util.*;
+import compilateurYal.arbre.* ;
+import compilateurYal.arbre.expressions.* ;
+import compilateurYal.arbre.expressions.arithmetique.*;
+import compilateurYal.arbre.expressions.logique.*;
+import compilateurYal.arbre.instructions.* ;
+import compilateurYal.exceptions.AnalyseSyntaxiqueException;
+
+import java_cup.runtime.*;
+
+action code {:
+             :} ;
+
+parser code {:
+
+    public void report_error(String message, Object info) {
+
+        HashMap<Integer, String> lesTerminaux = new HashMap<>() ;
+    
+        lesTerminaux.put(new Integer(CodesLexicaux.DEBUT), "debut") ;
+        lesTerminaux.put(new Integer(CodesLexicaux.FIN), "fin") ;
+        lesTerminaux.put(new Integer(CodesLexicaux.POINTVIRGULE), ";") ;
+
+        StringBuffer m = new StringBuffer() ;
+
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+
+            if (s.left >= 0) {                
+                m.append("\tligne : " + (s.left + 1)) ;
+                if (s.right >= 0)                    
+                    m.append(" colonne : " + (s.right+1)) ;
+            }
+            
+            if (s.value != null) {
+                lesTerminaux.put(CodesLexicaux.CSTENTIERE, "" + s.value) ;
+            }
+
+            if (lesTerminaux.containsKey(new Integer(s.sym))) {
+                m.append(" dernier token lu : " + lesTerminaux.get(new Integer(s.sym))) ;
+            }
+            else {
+                m.append(" expression non terminée") ;
+            }
+
+        }
+        throw new AnalyseSyntaxiqueException("" + m) ;
+    }
+
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+    }
+:};
+   
+/* ------------Declaration of Terminals and Non Terminals Section----------- */
+   
+/* Terminals (tokens returned by the scanner).  */
+
+terminal Symbol     PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE, LIRE, ENTIER, BOOLEEN, EGAL,
+                    PAR_OUV, PAR_FER, CRO_OUV, CRO_FER, PLUS, MOINS, FOIS, DIV,
+                    EXCLA, INF, SUP, NON, ET, OU,
+                    SI, ALORS, SINON, FINSI, TANTQUE, REPETER, FINTANTQUE;
+terminal String     IDF, CSTENTIERE;
+
+/* Non terminals used in the grammar section.  */
+
+non terminal ArbreAbstrait PROG, LINST, INST, LDECL, DECL_VAR, ECR, LECTURE, AFF, CONDITION, BOUCLE ;
+non terminal Expression EXP, OPER;
+
+precedence left PLUS, MOINS, FOIS, DIV, INF, SUP, EGAL, EXCLA, ET, OU;
+
+/* ----------------------------Grammar Section-------------------- */
+ 
+start with PROG ;
+
+PROG    ::=     PROGRAMME IDF DEBUT LDECL:ld LINST:li FIN
+                {:  Programme p = new Programme(ldleft + 1);
+                    p.ajouterDeclarations(ld);
+                    p.ajouterInstructions(li);
+                    RESULT = p; :}
+        |
+                PROGRAMME IDF DEBUT LINST:li FIN
+                {:  Programme p = new Programme(lileft + 1);
+                    p.ajouterDeclarations(new BlocDeDeclarations(lileft + 1));
+                    p.ajouterInstructions(li);
+                    RESULT = p; :}
+                ;
+
+LDECL   ::=     LDECL:ld DECL_VAR:d
+                {:  ((BlocDeDeclarations)ld).ajouter((Declaration)d);
+                    RESULT = ld; :}
+        |
+                DECL_VAR:d
+                {:  BlocDeDeclarations b = new BlocDeDeclarations(dleft + 1);
+                    b.ajouter(d);
+                    RESULT = b; :}
+                ;
+
+DECL_VAR    ::= ENTIER IDF:i POINTVIRGULE
+                {: RESULT = new Declaration(new IDF(i, ileft + 1), ileft + 1); :}
+                ;
+
+LINST   ::=     LINST:li  INST:i
+                {: ((BlocDInstructions)li).ajouter((Instruction)i) ;
+                   RESULT = li ; :}
+        |
+                INST:i
+                {:  BlocDInstructions b = new BlocDInstructions(ileft + 1);
+                    b.ajouter(i);
+                    RESULT = b ; :}
+                ;
+
+INST    ::=     ECR:e
+                {: RESULT = e ; :}
+        |
+                AFF:a
+                {: RESULT = a; :}
+        |
+                LECTURE:l
+                {: RESULT = l; :}
+        |
+                CONDITION:c
+                {: RESULT = c; :}
+        |
+                BOUCLE:b
+                {: RESULT = b; :}
+                ;
+
+AFF     ::=     IDF:i EGAL EXP:e POINTVIRGULE
+                {: RESULT = new Affectation(new IDF(i, ileft + 1), e, ileft + 1); :}
+                ;
+
+ECR     ::=     ECRIRE EXP:e POINTVIRGULE
+                {: RESULT = new Ecrire(e, eleft + 1) ; :}
+                ;
+
+LECTURE ::=     LIRE IDF:i POINTVIRGULE
+                {: RESULT = new Lire(new IDF(i, ileft + 1), ileft + 1); :}
+                ;
+
+CONDITION ::=   SI EXP:e ALORS LINST:li SINON LINST:sli FINSI
+                {: RESULT = new Condition(e, li, sli, eleft + 1); :}
+        |
+                SI EXP:e ALORS LINST:li FINSI
+                {: RESULT = new Condition(e, li, null, eleft + 1); :}
+        |
+                SI EXP:e ALORS SINON LINST:sli FINSI
+                {: RESULT = new Condition(e, new BlocDInstructions(eleft + 1), sli, eleft + 1); :}
+        |
+                SI EXP:e ALORS FINSI
+                {: RESULT = new Condition(e, new BlocDInstructions(eleft + 1), null, eleft + 1); :}
+                ;
+
+BOUCLE  ::=     TANTQUE EXP:e REPETER LINST:li FINTANTQUE
+                {: RESULT = new Boucle(e, li, eleft + 1); :}
+                ;
+    
+EXP     ::=     CSTENTIERE:c
+                {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
+        |
+                IDF:i
+                {:  IDF idf = new IDF(i, ileft + 1);
+                    RESULT = idf; :}
+        |
+                PAR_OUV EXP:e PAR_FER
+                {: RESULT = e; :}
+        |
+                NON EXP:e
+                {: RESULT = new Negation(e, eleft + 1); :}
+        |
+                EXP:e1 FOIS EXP:e2
+                {: RESULT = new Multiplication(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 DIV EXP:e2
+                {: RESULT = new Division(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 PLUS EXP:e2
+                {: RESULT = new Addition(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 MOINS EXP:e2
+                {: RESULT = new Soustraction(e1, e2, e1left + 1); :}
+        |
+                MOINS EXP:e
+                {: RESULT = new Soustraction(new ConstanteEntiere("0", eleft + 1), e, eleft + 1); :}
+        |
+                EXP:e1 INF EXP:e2
+                {: RESULT = new Inferieur(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 SUP EXP:e2
+                {: RESULT = new Superieur(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 EGAL EGAL EXP:e2
+                {: RESULT = new Egal(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 EXCLA EGAL EXP:e2
+                {: RESULT = new Different(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 ET EXP:e2
+                {: RESULT = new Et(e1, e2, e1left + 1); :}
+        |
+                EXP:e1 OU EXP:e2
+                {: RESULT = new Ou(e1, e2, e1left + 1); :}
+                ;

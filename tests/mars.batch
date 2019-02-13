@@ -1,0 +1,3 @@
+java -jar Mars4_5.jar test.mips > resultatMIPS.txt
+tail -n 3 resultatMIPS.txt > output.txt
+diff -q output.txt aComparer.txt > resultatDIFF.txt
