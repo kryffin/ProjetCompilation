@@ -99,10 +99,7 @@ LDECL   ::=     LDECL:ld DECL_VAR:d
                 ;
 
 DECL_VAR    ::= ENTIER IDF:i POINTVIRGULE
-                {: RESULT = new Declaration(new IDF(Expression.ENTIER, i, ileft + 1), ileft + 1); :}
-        |
-                BOOLEEN IDF:i POINTVIRGULE
-                {: RESULT = new Declaration(new IDF(Expression.BOOLEEN, i, ileft + 1), ileft + 1); :}
+                {: RESULT = new Declaration(new IDF(i, ileft + 1), ileft + 1); :}
                 ;
 
 LINST   ::=     LINST:li  INST:i

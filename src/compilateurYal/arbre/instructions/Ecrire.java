@@ -11,13 +11,24 @@ public class Ecrire extends Instruction {
     protected Expression exp ;
 
     /**
+     * identifiant de l'instruction écrire pour une expression logique
+     */
+    private int cpt;
+
+    /**
      * Constructeur par expression et numéro de ligne
      * @param e expression
      * @param n ligne
      */
     public Ecrire (Expression e, int n) {
-        super(n) ;
-        exp = e ;
+        super(n);
+        exp = e;
+
+        //si l'expression est logique, on récupère le compteur de l'instruction écrire et on l'incrémente
+        if (exp.estLogique()) {
+            cpt = CompteurEcrireLogique.getInstance().getCompteur();
+            CompteurEcrireLogique.getInstance().incrementerCompteur();
+        }
     }
 
     /**
@@ -40,10 +51,6 @@ public class Ecrire extends Instruction {
 
         //si l'expression est logique on écrire vrai/faux plutôt que sa valeur entière (1/0)
         if (exp.estLogique()) {
-
-            //si l'expression est logique, on récupère le compteur de l'instruction écrire et on l'incrémente
-            int cpt = CompteurEcrireLogique.getInstance().getCompteur();
-            CompteurEcrireLogique.getInstance().incrementerCompteur();
 
             //simple branchement sur ecrireFaux quand l'expression est fausse, vrai sinon
             sb.append(  "\necrire" + cpt + ":\n" +

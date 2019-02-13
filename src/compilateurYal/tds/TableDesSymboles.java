@@ -5,6 +5,7 @@ import compilateurYal.Yal;
 import compilateurYal.exceptions.AnalyseSemantiqueException;
 import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.symboles.Symbole;
+import javafx.application.Platform;
 
 import java.util.HashMap;
 
@@ -44,7 +45,7 @@ public class TableDesSymboles {
     public void ajouter (Entree e, Symbole s, int n) throws AnalyseSemantiqueException {
         //si la table contient la clé il y a donc une double déclaration de cette Entrée, on lance donc une erreur, sinon on l'ajoute
         if (tds.containsKey(e)) {
-            new AnalyseSemantiqueException(n, "double déclaration de la variable " + e.getNom()).printStackTrace();
+            new AnalyseSemantiqueException(n, "double déclaration de la variable " + e.getNom());
         } else {
             tds.put(e, s);
         }

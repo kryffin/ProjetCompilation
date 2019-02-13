@@ -25,7 +25,7 @@ public class Declaration extends ArbreAbstrait {
         this.idf = idf;
 
         //ajout de la variable dans la table des symboles
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(idf.getType(), TableDesSymboles.getInstance().getTailleZoneVariable()), n);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(TableDesSymboles.getInstance().getTailleZoneVariable()), n);
 
         //décrémentation de la pile des variables
         GestionnaireTailleZoneVariable.getInstance().incrementerTailleZoneVariable();

@@ -37,17 +37,9 @@ public class Affectation extends Instruction {
         idf.verifier();
         exp.verifier();
 
-        /* tests sur l'affectation de mauvais types */
-        if (idf.getType() == Expression.ENTIER && exp.estLogique()) {
-            new AnalyseSemantiqueException(noLigne, "affectation d'une expression logique " + exp + " dans une variable entière " + idf);
-        }
-
-        if (idf.getType() == Expression.BOOLEEN && !exp.estLogique()) {
-            new AnalyseSemantiqueException(noLigne, "affectation d'une expression non logique " + exp + " dans une variable logique " + idf);
-        }
-
-        if (idf.getType() == Expression.BOOLEEN && exp.estConstante()) {
-            new AnalyseSemantiqueException(noLigne, "affectation d'une constante " + exp + " dans une variable logique " + idf);
+        //on ne peut affecter une expression logique à un entier
+        if (exp.estLogique()) {
+            new AnalyseSemantiqueException(noLigne, "affectation d'une expression logique " + exp + " dans un entier " + idf);
         }
     }
 
