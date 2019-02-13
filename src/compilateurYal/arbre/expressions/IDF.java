@@ -1,5 +1,6 @@
 package compilateurYal.arbre.expressions;
 
+import compilateurYal.Yal;
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.EntreeVariable;
 import compilateurYal.tds.symboles.Symbole;
@@ -48,6 +49,10 @@ public class IDF extends Expression {
     public void verifier() {
         //récupération du symbole et renseignement du déplacement et type de la variable si elle existe bien
         Symbole s = TableDesSymboles.getInstance().identifier(new EntreeVariable(nom), noLigne);
+        if (Yal.exception) {
+            //en cas d'erreur précédente on ne vérifie pas plus loin la variable
+            return;
+        }
         deplacement = ((SymboleVariable)s).getDeplacement();
     }
 

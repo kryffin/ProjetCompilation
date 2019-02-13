@@ -17,12 +17,7 @@ public class Yal {
         try {
             AnalyseurSyntaxique analyseur = new AnalyseurSyntaxique(new AnalyseurLexical(new FileReader(nomFichier)));
             ArbreAbstrait arbre = (ArbreAbstrait) analyseur.parse().value;
-
-            try {
-                arbre.verifier();
-            } catch (NullPointerException e) {
-                //si il y a eu une exception
-            }
+            arbre.verifier();
 
             if (!exception) {
 
