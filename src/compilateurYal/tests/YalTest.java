@@ -1,7 +1,6 @@
 package compilateurYal.tests;
 
 import compilateurYal.arbre.expressions.ConstanteEntiere;
-import compilateurYal.arbre.expressions.Expression;
 import compilateurYal.arbre.expressions.IDF;
 import compilateurYal.arbre.expressions.arithmetique.Addition;
 import compilateurYal.arbre.expressions.arithmetique.Division;
@@ -58,7 +57,7 @@ class YalTest {
     @Test
     void testSymbole () {
 
-        Symbole s = new SymboleVariable(Expression.ENTIER, 40);
+        Symbole s = new SymboleVariable(40);
 
         assert (((SymboleVariable) s).getDeplacement() == 40) : "Erreur sur le déplacement d'un SymboleVariable";
 
@@ -116,7 +115,7 @@ class YalTest {
         //écriture d'un IDF (entier)
         e = new Ecrire(new IDF("b", 0), 0);
         e.verifier();
-        resultat =  "                #affichage de b (entier)\n" +
+        resultat =  "                #affichage de b\n" +
                     "    lw $v0, -4($s7)\n" +
                     "    move $a0, $v0\n" +
                     "    li $v0, 1\n" +
@@ -127,23 +126,29 @@ class YalTest {
                     "    syscall\n\n";
 
         assert (e.getNoLigne() == 0) : "Erreur sur le numéro de ligne de Ecrire d'un IDF (entier)";
-        assert (e.toMIPS().equals(resultat)) : "Erreur sur le toMIPS de Ecrire2";
+        assert (e.toMIPS().equals(resultat)) : "Erreur sur le toMIPS de Ecrire d'un entier";
 
-        //écriture d'un IDF (booléen)
-        e = new Ecrire(new IDF("d", 0), 0);
+        //écriture d'une expression logique
+        e = new Ecrire(new Egal(new IDF("d", 0), new IDF("a", 0), 0), 0);
         e.verifier();
 
-        resultat =  "                #affichage de d (booléen)\n" +
+        resultat =  "                #affichage de ( d == a )\n" +
                     "    lw $v0, -12($s7)\n" +
+                    "    sw $v0, ($sp)\n" +
+                    "    add $sp, $sp, -4\n" +
+                    "    lw $v0, 0($s7)\n" +
+                    "    add $sp, $sp, 4\n" +
+                    "    lw $t8, ($sp)\n" +
+                    "    seq $v0, $t8, $v0\n" +
                     "\necrire1:\n" +
                     "    beq $v0, $zero, ecrireFaux1\n\n" +
-                    "                #si d (booléen) = 1, on écrit donc vrai\n" +
+                    "                #si ( d == a ) = 1, on écrit donc vrai\n" +
                     "ecrireVrai1:\n" +
                     "    li $v0, 4\n" +
                     "    la $a0, vrai\n" +
                     "    syscall\n" +
                     "    j finEcrire1\n\n" +
-                    "                #si d (booléen) = 0, on écrit donc faux\n" +
+                    "                #si ( d == a ) = 0, on écrit donc faux\n" +
                     "ecrireFaux1:\n" +
                     "    li $v0, 4\n" +
                     "    la $a0, faux\n" +
@@ -155,7 +160,7 @@ class YalTest {
                     "    syscall\n\n";
 
         assert (e.getNoLigne() == 0) : "Erreur sur le numéro de ligne de Ecrire d'un IDF (booléen)";
-        assert (e.toMIPS().equals(resultat)) : "Erreur sur le toMIPS de Ecrire2" + e.toMIPS();
+        assert (e.toMIPS().equals(resultat)) : "Erreur sur le toMIPS de Ecrire d'une expression logique";
 
 
     }
@@ -163,9 +168,9 @@ class YalTest {
     @Test
     void testDeclaration () {
 
-        Declaration d = new Declaration(new IDF(Expression.ENTIER, "e", 0), 0);
+        Declaration d = new Declaration(new IDF("e", 0), 0);
         d.verifier();
-        String resultat =   "                #variable e (entier)\n" +
+        String resultat =   "                #variable e\n" +
                             "    add $sp, $sp, -4\n\n";
 
         assert (d.getNoLigne() == 0) : "Erreur sur le numéro de ligne de Declaration";
@@ -179,7 +184,7 @@ class YalTest {
         //affectation d'une constante entière
         Affectation a = new Affectation(new IDF("a", 0), new ConstanteEntiere("9", 0), 0);
         a.verifier();
-        String resultat =   "                #affectation de 9 dans a (entier)\n" +
+        String resultat =   "                #affectation de 9 dans a\n" +
                             "    li $v0, 9\n" +
                             "    sw $v0, 0($s7)\n\n";
 
@@ -188,38 +193,11 @@ class YalTest {
         //affectation d'un IDF
         a = new Affectation(new IDF("a", 0), new IDF("c", 0), 0);
         a.verifier();
-        resultat =  "                #affectation de c (entier) dans a (entier)\n" +
+        resultat =  "                #affectation de c dans a\n" +
                     "    lw $v0, -8($s7)\n" +
                     "    sw $v0, 0($s7)\n\n";
 
         assert (a.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une Affectation d'un IDF";
-
-    }
-
-    @Test
-    void testException () {
-
-        //test d'une variable non déclarée
-        boolean exception = false;
-
-        try {
-            TableDesSymboles.getInstance().identifier(new EntreeVariable("f"), 0);
-        } catch (AnalyseSemantiqueException e) {
-            exception = true;
-        }
-
-        assert (exception) : "Erreur sur le lancement d'une exception pour variable non déclarée";
-
-        //test d'une double déclaration
-        exception = false;
-
-        try {
-            TableDesSymboles.getInstance().ajouter(new EntreeVariable("a"), new SymboleVariable(Expression.ENTIER, 0), 0);
-        } catch (AnalyseSemantiqueException e) {
-            exception = true;
-        }
-
-        assert (exception) : "Erreur sur le lancement d'une exception pour variable non déclarée";
 
     }
 
@@ -623,15 +601,18 @@ class YalTest {
 
         String resultat;
 
-        Condition cond = new Condition( new IDF("d", 0),
+        Condition cond = new Condition( new Egal(new ConstanteEntiere("10", 0), new ConstanteEntiere("5", 0), 0),
                                         new Ecrire(new ConstanteEntiere("19", 0), 0),
                                         new Ecrire(new ConstanteEntiere("91", 0), 0),
                                         0);
         cond.verifier();
 
-        resultat =  "        #conditionnelle 1 sur d (booléen)\n" +
+        resultat =  "        #conditionnelle 1 sur ( 10 == 5 )\n" +
                     "si1:\n" +
-                    "    lw $v0, -12($s7)\n" +
+                    "    li $v0, 10\n" +
+                    "    move $t8, $v0\n" +
+                    "    li $v0, 5\n" +
+                    "    seq $v0, $t8, $v0\n" +
                     "    beq $v0, $zero, sinon1\n\n" +
                     "alors1:\n" +
                     "                #affichage de 19\n" +
@@ -657,21 +638,6 @@ class YalTest {
                     "finsi1:\n\n";
 
         assert (cond.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une condition";
-
-        boolean exception = false;
-
-        cond = new Condition( new IDF("a", 0),
-                new Ecrire(new ConstanteEntiere("19", 0), 0),
-                new Ecrire(new ConstanteEntiere("91", 0), 0),
-                0);
-
-        try {
-            cond.verifier();
-        } catch (AnalyseSemantiqueException e) {
-            exception = true;
-        }
-
-        assert (exception) : "Erreur sur le lancement d'une exception quand l'expression d'une condition n'edst pas booléenne";
 
     }
 
@@ -706,29 +672,15 @@ class YalTest {
 
         assert (bouc.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une boucle";
 
-        boolean exception = false;
-
-        bouc = new Boucle(   new Addition(new ConstanteEntiere("1", 0), new ConstanteEntiere("1", 0), 0),
-                new Ecrire(new ConstanteEntiere("19", 0), 0),
-                0);
-
-        try {
-            bouc.verifier();
-        } catch (AnalyseSemantiqueException e) {
-            exception = true;
-        }
-
-        assert (exception) : "erreur sur le lancement d'une exception lors d'une boucle sur une expression arithmétique";
-
     }
 
     @org.junit.jupiter.api.Test
     void main() {
 
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("a"), new SymboleVariable(Expression.ENTIER, 0), 0);
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("b"), new SymboleVariable(Expression.ENTIER, -4), 0);
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("c"), new SymboleVariable(Expression.ENTIER, -8), 0);
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("d"), new SymboleVariable(Expression.BOOLEEN, -12), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("a"), new SymboleVariable(0), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("b"), new SymboleVariable(-4), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("c"), new SymboleVariable(-8), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("d"), new SymboleVariable(-12), 0);
 
         testIDF();
         testConstanteEntiere();
@@ -739,7 +691,6 @@ class YalTest {
         testEcrire();
         testDeclaration();
         testAffectation();
-        testException();
 
         testOperationsBinaires();
 

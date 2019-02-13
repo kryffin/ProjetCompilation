@@ -18,9 +18,14 @@ public class Yal {
             AnalyseurSyntaxique analyseur = new AnalyseurSyntaxique(new AnalyseurLexical(new FileReader(nomFichier)));
             ArbreAbstrait arbre = (ArbreAbstrait) analyseur.parse().value;
 
-            arbre.verifier();
+            try {
+                arbre.verifier();
+            } catch (NullPointerException e) {
+                //si il y a eu une exception
+            }
 
             if (!exception) {
+
                 System.out.println("COMPILATION OK") ;
 
                 String nomSortie = nomFichier.replaceAll("[.]yal", ".mips") ;
