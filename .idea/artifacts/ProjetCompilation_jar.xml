@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ProjetCompilation:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ProjetCompilation_jar</output-path>
+    <root id="archive" name="ProjetCompilation.jar">
+      <element id="module-output" name="ProjetCompilation" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/L3/Compilation/jflex-1.6.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/L3/Compilation/java-cup-11a.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

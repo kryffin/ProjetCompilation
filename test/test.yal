@@ -1,0 +1,6 @@
+programme compilo debut
+entier a;
+a = 12;
+ecrire 36;
+//commentaire
+fin
