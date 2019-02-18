@@ -8,7 +8,6 @@ import compilateurYal.arbre.expressions.arithmetique.Multiplication;
 import compilateurYal.arbre.expressions.arithmetique.Soustraction;
 import compilateurYal.arbre.expressions.logique.*;
 import compilateurYal.arbre.instructions.*;
-import compilateurYal.exceptions.AnalyseSemantiqueException;
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.entrees.EntreeVariable;
@@ -57,9 +56,10 @@ class YalTest {
     @Test
     void testSymbole () {
 
-        Symbole s = new SymboleVariable(40);
+        Symbole s = new SymboleVariable(40, 0);
 
         assert (((SymboleVariable) s).getDeplacement() == 40) : "Erreur sur le déplacement d'un SymboleVariable";
+        assert (((SymboleVariable) s).getNRegion() == 0) : "Erreur sur la région d'un SymboleVariable";
 
     }
 
@@ -168,13 +168,13 @@ class YalTest {
     @Test
     void testDeclaration () {
 
-        Declaration d = new Declaration(new IDF("e", 0), 0);
+        DeclarationVariable d = new DeclarationVariable(new IDF("e", 0), 0);
         d.verifier();
         String resultat =   "                #variable e\n" +
                             "    add $sp, $sp, -4\n\n";
 
-        assert (d.getNoLigne() == 0) : "Erreur sur le numéro de ligne de Declaration";
-        assert (d.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une Declaration";
+        assert (d.getNoLigne() == 0) : "Erreur sur le numéro de ligne de DeclarationVariable";
+        assert (d.toMIPS().equals(resultat)) : "Erreur sur le toMIPS d'une DeclarationVariable";
 
     }
 
@@ -677,10 +677,10 @@ class YalTest {
     @org.junit.jupiter.api.Test
     void main() {
 
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("a"), new SymboleVariable(0), 0);
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("b"), new SymboleVariable(-4), 0);
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("c"), new SymboleVariable(-8), 0);
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable("d"), new SymboleVariable(-12), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("a"), new SymboleVariable(0, 0), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("b"), new SymboleVariable(-4, 0), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("c"), new SymboleVariable(-8, 0), 0);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable("d"), new SymboleVariable(-12, 0), 0);
 
         testIDF();
         testConstanteEntiere();

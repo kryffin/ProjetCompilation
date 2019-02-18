@@ -1,20 +1,15 @@
 package compilateurYal.tds;
 
+import compilateurYal.CompteurRegions;
 import compilateurYal.GestionnaireTailleZoneVariable;
-import compilateurYal.Yal;
 import compilateurYal.exceptions.AnalyseSemantiqueException;
 import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.symboles.Symbole;
-import javafx.application.Platform;
-
-import java.util.HashMap;
 
 public class TableDesSymboles {
 
-    /**
-     * HashMap représentant la table des symboles : Entree -> Symbole
-     */
-    private HashMap<Entree, Symbole> tds;
+    private TableLocale tableCourante;
+    private TableLocale tableRacine;
 
     /**
      * instance du singleton
@@ -25,7 +20,9 @@ public class TableDesSymboles {
      * Constructeur vide
      */
     private TableDesSymboles () {
-        tds = new HashMap<>();
+        tableRacine = new TableLocale(CompteurRegions.getInstance().getCompteur());
+        CompteurRegions.getInstance().incrementerCompteur();
+        tableCourante = tableRacine;
     }
 
     /**
@@ -36,38 +33,55 @@ public class TableDesSymboles {
     }
 
     /**
-     * Méthode ajoutant un élément dans la table de hachage ou lance une erreur si l'élément est déjà dans la table
+     * Méthode ajoutant un élément dans la table courante
      * @param e Entrée
      * @param s Symbole
      * @param n numéro de la ligne dans le fichier .yal pour lancer l'erreur
-     * @throws AnalyseSemantiqueException en cas de double déclaration d'une variable
      */
-    public void ajouter (Entree e, Symbole s, int n) throws AnalyseSemantiqueException {
-        //si la table contient la clé il y a donc une double déclaration de cette Entrée, on lance donc une erreur, sinon on l'ajoute
-        if (tds.containsKey(e)) {
-            new AnalyseSemantiqueException(n, "double déclaration de la variable " + e.getNom());
-        } else {
-            tds.put(e, s);
-        }
+    public void ajouter (Entree e, Symbole s, int n) {
+        //ajout de l'Entree dans la table courante
+        tableCourante.ajouter(e, s, n);
     }
 
     /**
-     * Méthode identifiant un élément de la table de hachage et le renvoie s'il existe, lance une erreur sinon
+     * Méthode identifiant un élément dans la table courante
      * @param e Entrée à retrouver
      * @param n numéro de la ligne dans le fichier .yal pour lancer l'erreur
-     * @return le symbole correspondant à l'Entrée dans la table
-     * @throws AnalyseSemantiqueException en cas de non déclaration de la variable qu'on veut récupérer
+     * @return le symbole correspondant à l'Entrée dans la table courante
      */
     public Symbole identifier (Entree e, int n) throws AnalyseSemantiqueException {
-        Symbole s = tds.get(e);
+        //identification dans la table courante
+        return tableCourante.identifier(e, n);
+    }
 
-        //si le symbole est null on ne l'a donc pas retrouvé dans la table, on lance donc une erreur, sinon on renvoie le symbole
-        if (s == null) {
-            new AnalyseSemantiqueException(n, "variable " + e.getNom() + " non déclarée");
-            return null;
-        } else {
-            return s;
+    public void entrerRegion () {
+        TableLocale nouvelleTable = new TableLocale(CompteurRegions.getInstance().getCompteur());
+        CompteurRegions.getInstance().incrementerCompteur();
+        nouvelleTable.setTablePere(tableCourante);
+        tableCourante.addFille(nouvelleTable);
+        tableCourante = nouvelleTable;
+    }
+
+    public void entrerRegionVerifier () {
+        CompteurRegions.getInstance().incrementerCompteur();
+        for (TableLocale tl : getTableCourante().getTablesFilles()) {
+            if (tl.getNRegion() == CompteurRegions.getInstance().getCompteur()) {
+                tableCourante = tl;
+                break;
+            }
         }
+    }
+
+    public void sortieRegion () {
+        tableCourante = tableCourante.getTablePere();
+    }
+
+    public void sortieRegionVerifier () {
+        sortieRegion();
+    }
+
+    public TableLocale getTableCourante () {
+        return tableCourante;
     }
 
     /**
@@ -77,8 +91,4 @@ public class TableDesSymboles {
         return GestionnaireTailleZoneVariable.getInstance().getTailleZoneVariable();
     }
 
-    @Override
-    public String toString() {
-        return tds.toString();
-    }
 }

@@ -10,8 +10,10 @@ public class SymboleVariable extends Symbole {
     /**
      * Constructeur par déplacement de la variable dans la pile
      * @param deplacement entier représentant le déplacement dans la pile
+     * @param nRegion entier représentant le numéro de région de la variable
      */
-    public SymboleVariable (int deplacement) {
+    public SymboleVariable (int deplacement, int nRegion) {
+        super(nRegion);
         this.deplacement = deplacement;
     }
 

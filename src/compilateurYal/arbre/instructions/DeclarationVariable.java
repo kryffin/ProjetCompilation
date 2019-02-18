@@ -8,7 +8,7 @@ import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.EntreeVariable;
 import compilateurYal.tds.symboles.SymboleVariable;
 
-public class Declaration extends ArbreAbstrait {
+public class DeclarationVariable extends ArbreAbstrait {
 
     /**
      * identifiant de la variable à déclarer
@@ -20,12 +20,15 @@ public class Declaration extends ArbreAbstrait {
      * @param idf identifiant
      * @param n ligne
      */
-    public Declaration (IDF idf, int n) {
+    public DeclarationVariable(IDF idf, int n) {
         super(n);
         this.idf = idf;
 
+        int tailleZoneVariable = TableDesSymboles.getInstance().getTailleZoneVariable();
+        int nRegionCourante = TableDesSymboles.getInstance().getTableCourante().getNRegion();
+
         //ajout de la variable dans la table des symboles
-        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(TableDesSymboles.getInstance().getTailleZoneVariable()), n);
+        TableDesSymboles.getInstance().ajouter(new EntreeVariable(idf.getNom()), new SymboleVariable(tailleZoneVariable, nRegionCourante), n);
 
         //décrémentation de la pile des variables
         GestionnaireTailleZoneVariable.getInstance().incrementerTailleZoneVariable();

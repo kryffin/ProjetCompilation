@@ -38,24 +38,10 @@ public class Programme extends ArbreAbstrait {
      * Constructeur par numéro de ligne
      * @param n ligne
      */
-    public Programme (int n) {
+    public Programme (ArbreAbstrait declarations, ArbreAbstrait instructions, int n) {
         super(n);
-    }
-
-    /**
-     * Ajoute l'arbre abstrait d en tant que déclarations
-     * @param d arbre abstrait de déclarations
-     */
-    public void ajouterDeclarations (ArbreAbstrait d) {
-        declarations = d;
-    }
-
-    /**
-     * Ajoute l'arbre abstrait i en tant qu'instructions
-     * @param i arbre abstrait d'instructions
-     */
-    public void ajouterInstructions (ArbreAbstrait i) {
-        instructions = i;
+        this.declarations = declarations;
+        this.instructions = instructions;
     }
 
     /**

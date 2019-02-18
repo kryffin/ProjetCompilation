@@ -7,6 +7,7 @@ import compilateurYal.arbre.expressions.arithmetique.*;
 import compilateurYal.arbre.expressions.logique.*;
 import compilateurYal.arbre.instructions.* ;
 import compilateurYal.exceptions.AnalyseSyntaxiqueException;
+import compilateurYal.tds.TableDesSymboles;
 
 import java_cup.runtime.*;
 
@@ -54,19 +55,21 @@ parser code {:
     }
 :};
    
-/* ------------Declaration of Terminals and Non Terminals Section----------- */
+/* ------------DeclarationVariable of Terminals and Non Terminals Section----------- */
    
 /* Terminals (tokens returned by the scanner).  */
 
 terminal Symbol     PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE, LIRE, ENTIER, BOOLEEN, EGAL,
                     PAR_OUV, PAR_FER, CRO_OUV, CRO_FER, PLUS, MOINS, FOIS, DIV,
                     EXCLA, INF, SUP, NON, ET, OU,
-                    SI, ALORS, SINON, FINSI, TANTQUE, REPETER, FINTANTQUE;
+                    SI, ALORS, SINON, FINSI, TANTQUE, REPETER, FINTANTQUE,
+                    FONCTION;
 terminal String     IDF, CSTENTIERE;
 
 /* Non terminals used in the grammar section.  */
 
-non terminal ArbreAbstrait PROG, LINST, INST, LDECL, DECL_VAR, ECR, LECTURE, AFF, CONDITION, BOUCLE ;
+non terminal ArbreAbstrait  PROG, LINST, INST, LDECL, DECL_VAR, DECL_FONC,
+                            ECR, LECTURE, AFF, CONDITION, BOUCLE, PARAM;
 non terminal Expression EXP, OPER;
 
 precedence left PLUS, MOINS, FOIS, DIV, INF, SUP, EGAL, EXCLA, ET, OU;
@@ -76,30 +79,48 @@ precedence left PLUS, MOINS, FOIS, DIV, INF, SUP, EGAL, EXCLA, ET, OU;
 start with PROG ;
 
 PROG    ::=     PROGRAMME IDF DEBUT LDECL:ld LINST:li FIN
-                {:  Programme p = new Programme(ldleft + 1);
-                    p.ajouterDeclarations(ld);
-                    p.ajouterInstructions(li);
+                {:  Programme p = new Programme(ld, li, ldleft + 1);
                     RESULT = p; :}
         |
                 PROGRAMME IDF DEBUT LINST:li FIN
-                {:  Programme p = new Programme(lileft + 1);
-                    p.ajouterDeclarations(new BlocDeDeclarations(lileft + 1));
-                    p.ajouterInstructions(li);
+                {:  Programme p = new Programme(new BlocDeDeclarations(lileft + 1), li, lileft + 1);
                     RESULT = p; :}
                 ;
 
 LDECL   ::=     LDECL:ld DECL_VAR:d
-                {:  ((BlocDeDeclarations)ld).ajouter((Declaration)d);
+                {:  ((BlocDeDeclarations)ld).ajouter((DeclarationVariable)d);
                     RESULT = ld; :}
         |
                 DECL_VAR:d
                 {:  BlocDeDeclarations b = new BlocDeDeclarations(dleft + 1);
                     b.ajouter(d);
                     RESULT = b; :}
+        |
+                LDECL:ld DECL_FONC:d
+                {:  ((BlocDeDeclarations)ld).ajouter((DeclarationFonction)d);
+                    RESULT = ld; :}
+        |
+                DECL_FONC:d
+                {:  BlocDeDeclarations b = new BlocDeDeclarations(dleft + 1);
+                    b.ajouter(d);
+                    RESULT = b; :}
                 ;
 
 DECL_VAR    ::= ENTIER IDF:i POINTVIRGULE
-                {: RESULT = new Declaration(new IDF(i, ileft + 1), ileft + 1); :}
+                {:  RESULT = new DeclarationVariable(new IDF(i, ileft + 1), ileft + 1); :}
+                ;
+
+DECL_FONC   ::= FONCTION IDF:i PARAM DEBUT LDECL:ld LINST:li FIN
+                {:  TableDesSymboles.getInstance().sortieRegion();
+                    RESULT = new DeclarationFonction(new IDF(i, false, ileft + 1), ld, li, ileft + 1); :}
+        |
+                FONCTION IDF:i PARAM DEBUT LINST:li FIN
+                {:  TableDesSymboles.getInstance().sortieRegion();
+                    RESULT = new DeclarationFonction(new IDF(i, false, ileft + 1), new BlocDeDeclarations(ileft + 1), li, ileft + 1); :}
+                ;
+
+PARAM   ::=     PAR_OUV PAR_FER
+                {: TableDesSymboles.getInstance().entrerRegion(); :}
                 ;
 
 LINST   ::=     LINST:li  INST:i
@@ -157,7 +178,10 @@ BOUCLE  ::=     TANTQUE EXP:e REPETER LINST:li FINTANTQUE
                 {: RESULT = new Boucle(e, li, eleft + 1); :}
                 ;
     
-EXP     ::=     CSTENTIERE:c
+EXP     ::=     IDF:i PAR_OUV PAR_FER
+                {: RESULT = new Fonction(new IDF(i, false, ileft + 1), ileft + 1); :}
+        |
+                CSTENTIERE:c
                 {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
         |
                 IDF:i
