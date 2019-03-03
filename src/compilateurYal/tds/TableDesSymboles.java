@@ -8,7 +8,14 @@ import compilateurYal.tds.symboles.Symbole;
 
 public class TableDesSymboles {
 
+    /**
+     * table parcourue actuellement
+     */
     private TableLocale tableCourante;
+
+    /**
+     * table racine (table du main)
+     */
     private TableLocale tableRacine;
 
     /**
@@ -54,6 +61,9 @@ public class TableDesSymboles {
         return tableCourante.identifier(e, n);
     }
 
+    /**
+     * entre dans une nouvelle région
+     */
     public void entrerRegion () {
         TableLocale nouvelleTable = new TableLocale(CompteurRegions.getInstance().getCompteur());
         CompteurRegions.getInstance().incrementerCompteur();
@@ -62,6 +72,9 @@ public class TableDesSymboles {
         tableCourante = nouvelleTable;
     }
 
+    /**
+     * entre dans une nouvelle région (pour vérification)
+     */
     public void entrerRegionVerifier () {
         CompteurRegions.getInstance().incrementerCompteur();
         for (TableLocale tl : getTableCourante().getTablesFilles()) {
@@ -72,14 +85,23 @@ public class TableDesSymboles {
         }
     }
 
+    /**
+     * sors de la région
+     */
     public void sortieRegion () {
         tableCourante = tableCourante.getTablePere();
     }
 
+    /**
+     * sors de la région (pour la vérification)
+     */
     public void sortieRegionVerifier () {
         sortieRegion();
     }
 
+    /**
+     * @return table courante
+     */
     public TableLocale getTableCourante () {
         return tableCourante;
     }

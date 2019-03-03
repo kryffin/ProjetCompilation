@@ -88,6 +88,8 @@ commentaire = [/][/].*
 
 "fonction"              { return symbol(CodesLexicaux.FONCTION); }
 
+"retourne"              { return symbol(CodesLexicaux.RETOURNE); }
+
 "si"                    { return symbol(CodesLexicaux.SI); }
 
 "alors"                 { return symbol(CodesLexicaux.ALORS); }

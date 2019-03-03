@@ -62,6 +62,8 @@ public class Programme extends ArbreAbstrait {
         StringBuilder sb = new StringBuilder("") ;
         sb.append(zoneData) ;
         sb.append(debutCode) ;
+        sb.append("                #allocation de la place mémoire pour les variables\n");
+        sb.append("    move $s7, $sp\n\n");
         sb.append(declarations.toMIPS()) ;
         sb.append(instructions.toMIPS()) ;
         sb.append(finCode) ;

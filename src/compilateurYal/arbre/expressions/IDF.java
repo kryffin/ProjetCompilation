@@ -1,7 +1,9 @@
 package compilateurYal.arbre.expressions;
 
+import compilateurYal.CompteurRegions;
 import compilateurYal.Yal;
 import compilateurYal.tds.TableDesSymboles;
+import compilateurYal.tds.TableLocale;
 import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.entrees.EntreeFonction;
 import compilateurYal.tds.entrees.EntreeVariable;
@@ -20,8 +22,14 @@ public class IDF extends Expression {
      */
     private int deplacement;
 
+    /**
+     * numéro de région de la variable
+     */
     private int nRegion;
 
+    /**
+     * vrai si l'identifiant est une variable, faux si c'est une variable représentant une fonction
+     */
     private boolean variable;
 
     /**
@@ -64,7 +72,7 @@ public class IDF extends Expression {
     }
 
     /**
-     * vérifie si la variable est bien dans la table des symboles et met à jour le déplacement
+     * vérifie si la variable est bien dans la table des symboles et met à jour le déplacement ainsi que le numéro de région
      */
     @Override
     public void verifier() {
@@ -93,7 +101,20 @@ public class IDF extends Expression {
      */
     @Override
     public String toMIPS() {
-        return  "    lw $v0, " + deplacement + "($s7)\n";
+        TableLocale tl = TableDesSymboles.getInstance().getTableCourante();
+        if (tl.getNRegion() == nRegion) {
+            return  "    lw $v0, " + deplacement + "($s7)\n";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(  "                #récupération de la variable " + getNom() + tl.getNRegion() + "\n" +
+                    "    move $t8, $s7\n");
+        while (tl.getNRegion() != nRegion) {
+            sb.append("    lw $t8, 8($t8)\n");
+            tl = tl.getTablePere();
+        }
+        sb.append("    lw $v0, " + deplacement + "($t8)\n");
+        return sb.toString();
     }
 
     @Override

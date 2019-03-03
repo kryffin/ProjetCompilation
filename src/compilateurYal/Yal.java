@@ -19,6 +19,7 @@ public class Yal {
             ArbreAbstrait arbre = (ArbreAbstrait) analyseur.parse().value;
             CompteurRegions.getInstance().reset();
             arbre.verifier();
+            CompteurRegions.getInstance().reset();
 
             if (!exception) {
 
