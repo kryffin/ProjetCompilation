@@ -2,6 +2,7 @@ package compilateurYal.analyse ;
 
 import java.util.*;
 import compilateurYal.arbre.* ;
+import compilateurYal.arbre.parametres.* ;
 import compilateurYal.arbre.expressions.* ;
 import compilateurYal.arbre.expressions.arithmetique.*;
 import compilateurYal.arbre.expressions.logique.*;
@@ -59,18 +60,20 @@ parser code {:
    
 /* Terminals (tokens returned by the scanner).  */
 
-terminal Symbol     PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE, LIRE, ENTIER, BOOLEEN, EGAL,
-                    PAR_OUV, PAR_FER, CRO_OUV, CRO_FER, PLUS, MOINS, FOIS, DIV,
-                    EXCLA, INF, SUP, NON, ET, OU,
+terminal Symbol     PROGRAMME, DEBUT, FIN, POINTVIRGULE, VIRGULE, ECRIRE, LIRE,
+                    ENTIER, BOOLEEN, EGAL, PAR_OUV, PAR_FER, CRO_OUV, CRO_FER,
+                    PLUS, MOINS, FOIS, DIV, EXCLA, INF, SUP, NON, ET, OU,
                     SI, ALORS, SINON, FINSI, TANTQUE, REPETER, FINTANTQUE,
                     FONCTION, RETOURNE;
 terminal String     IDF, CSTENTIERE;
 
 /* Non terminals used in the grammar section.  */
 
-non terminal ArbreAbstrait  PROG, LINST, INST, LDECL, DECL_VAR, DECL_FONC,
-                            ECR, LECTURE, AFF, CONDITION, BOUCLE, PARAM, RET;
-non terminal Expression EXP, OPER;
+non terminal ArbreAbstrait  PROG, LINST, INST, LDECL, DECL_VAR, DECL_FONC, ECR,
+                            LECTURE, AFF, CONDITION, BOUCLE, PARAM, RET, LPARAM, PAR_EFF;
+non terminal Expression     EXP, OPER;
+
+non terminal String         FCT_REGION, FIN_REGION;
 
 precedence left PLUS, MOINS, FOIS, DIV, INF, SUP, EGAL, EXCLA, ET, OU;
 
@@ -110,17 +113,44 @@ DECL_VAR    ::= ENTIER IDF:i POINTVIRGULE
                 {:  RESULT = new DeclarationVariable(new IDF(i, ileft + 1), ileft + 1); :}
                 ;
 
-DECL_FONC   ::= FONCTION IDF:i PARAM DEBUT LDECL:ld LINST:li FIN
-                {:  TableDesSymboles.getInstance().sortieRegion();
-                    RESULT = new DeclarationFonction(new IDF(i, false, ileft + 1), ld, li, ileft + 1); :}
-        |
-                FONCTION IDF:i PARAM DEBUT LINST:li FIN
-                {:  TableDesSymboles.getInstance().sortieRegion();
-                    RESULT = new DeclarationFonction(new IDF(i, false, ileft + 1), new BlocDeDeclarations(ileft + 1), li, ileft + 1); :}
+FCT_REGION  ::= FONCTION
+                {:  TableDesSymboles.getInstance().entrerRegion();
+                    RESULT = null; :}
                 ;
 
-PARAM   ::=     PAR_OUV PAR_FER
-                {: TableDesSymboles.getInstance().entrerRegion(); :}
+FIN_REGION  ::= FIN
+                {:  TableDesSymboles.getInstance().sortieRegion();
+                    RESULT = null; :}
+                ;
+
+DECL_FONC   ::= FCT_REGION IDF:i PARAM:p DEBUT LDECL:ld LINST:li FIN_REGION
+                {:  RESULT = new DeclarationFonction(new IDF(i, false, ileft + 1), p, ld, li, ileft + 1); :}
+        |
+                FCT_REGION IDF:i PARAM:p DEBUT LINST:li FIN_REGION
+                {:  RESULT = new DeclarationFonction(new IDF(i, false, ileft + 1), p, new BlocDeDeclarations(ileft + 1), li, ileft + 1); :}
+                ;
+
+LPARAM  ::=     LPARAM:lp POINTVIRGULE ENTIER IDF:i
+                {:  ((BlocDeParametresFormels)lp).ajouter(new DeclarationVariable(new IDF(i, ileft + 1), ileft + 1));
+                    RESULT = lp; :}
+        |
+                POINTVIRGULE ENTIER IDF:i
+                {:  BlocDeParametresFormels b = new BlocDeParametresFormels(ileft + 1);
+                    b.ajouter(new DeclarationVariable(new IDF(i, ileft + 1), ileft + 1));
+                    RESULT = b; :}
+                ;
+
+PARAM   ::=     PAR_OUV:p PAR_FER
+                {:  RESULT = new BlocDeParametresFormels(pleft + 1); :}
+        |
+                PAR_OUV ENTIER IDF:i PAR_FER
+                {:  BlocDeParametresFormels b = new BlocDeParametresFormels(ileft + 1);
+                    b.ajouter(new DeclarationVariable(new IDF(i, ileft + 1), ileft + 1));
+                    RESULT = b; :}
+        |
+                PAR_OUV ENTIER IDF:i LPARAM:lp PAR_FER
+                {:  ((BlocDeParametresFormels)lp).ajouter(new DeclarationVariable(new IDF(i, ileft + 1), ileft + 1));
+                    RESULT = lp; :}
                 ;
 
 LINST   ::=     LINST:li  INST:i
@@ -184,9 +214,28 @@ BOUCLE  ::=     TANTQUE EXP:e REPETER LINST:li FINTANTQUE
 RET     ::=     RETOURNE EXP:e POINTVIRGULE
                 {: RESULT = new Retourne(e, eleft + 1); :}
                 ;
+
+PAR_EFF ::=     PAR_EFF:p VIRGULE EXP:e
+                {:  ((BlocDeParametresEffectifs)p).ajouter(e);
+                    RESULT = p; :}
+        |
+                VIRGULE EXP:e
+                {:  BlocDeParametresEffectifs p = new BlocDeParametresEffectifs(eleft + 1);
+                    p.ajouter(e);
+                    RESULT = p; :}
+                ;
     
 EXP     ::=     IDF:i PAR_OUV PAR_FER
-                {: RESULT = new Fonction(new IDF(i, false, ileft + 1), ileft + 1); :}
+                {: RESULT = new Fonction(new IDF(i, false, ileft + 1), new BlocDeParametresEffectifs(ileft + 1), ileft + 1); :}
+        |
+                IDF:i PAR_OUV EXP:arg PAR_FER
+                {:  BlocDeParametresEffectifs p = new BlocDeParametresEffectifs(ileft + 1);
+                    p.ajouter(arg);
+                    RESULT = new Fonction(new IDF(i, false, ileft + 1), p, ileft + 1); :}
+        |
+                IDF:i PAR_OUV EXP:arg PAR_EFF:p PAR_FER
+                {:  ((BlocDeParametresEffectifs)p).ajouter(arg);
+                    RESULT = new Fonction(new IDF(i, false, ileft + 1), p, ileft + 1); :}
         |
                 CSTENTIERE:c
                 {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}

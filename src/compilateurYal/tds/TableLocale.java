@@ -55,7 +55,7 @@ public class TableLocale {
     public void ajouter (Entree e, Symbole s, int n) throws AnalyseSemantiqueException {
         //si la table contient la clé il y a donc une double déclaration de cette Entrée, on lance donc une erreur, sinon on l'ajoute
         if (tds.containsKey(e)) {
-            new AnalyseSemantiqueException(n, "double déclaration de la variable " + e.getNom());
+            new AnalyseSemantiqueException(n, "double déclaration de " + e.getNom());
         } else {
             tds.put(e, s);
             nVariables++;
@@ -75,7 +75,7 @@ public class TableLocale {
         //si le symbole est null on ne l'a donc pas retrouvé dans la table, on lance donc une erreur, sinon on renvoie le symbole
         if (s == null) {
             if (tableMere == null) {
-                new AnalyseSemantiqueException(n, "variable " + e.getNom() + " non déclarée" + nRegion);
+                new AnalyseSemantiqueException(n, "variable " + e.getNom() + " non déclarée");
             }
             return tableMere.identifier(e, n);
         } else {

@@ -31,6 +31,22 @@ public class BlocDInstructions extends ArbreAbstrait {
     public void ajouter(ArbreAbstrait a) {
         instructions.add(a) ;
     }
+
+    /**
+     * Retourne l'instruction à la position i
+     * @param i indice de l'instruction
+     * @return instruction à la position i
+     */
+    public ArbreAbstrait getInstruction (int i) {
+        return instructions.get(i);
+    }
+
+    /**
+     * @return nombre d'instructions du bloc
+     */
+    public int nbInstructions () {
+        return instructions.size();
+    }
     
     @Override
     public String toString() {

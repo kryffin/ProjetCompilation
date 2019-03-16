@@ -35,6 +35,13 @@ public class DeclarationVariable extends ArbreAbstrait {
     }
 
     /**
+     * @return IDF identifiant la variable
+     */
+    public IDF getIDF () {
+        return idf;
+    }
+
+    /**
      * vérifie l'identifiant
      */
     @Override

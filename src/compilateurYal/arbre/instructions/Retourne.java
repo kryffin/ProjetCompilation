@@ -10,12 +10,26 @@ public class Retourne extends Instruction {
     private Expression exp;
 
     /**
+     * nom de la fonction à quitter
+     */
+    private String nomFonction;
+
+    /**
      * Constructeur par numéro de ligne
      * @param n ligne
      */
     public Retourne(Expression exp, int n) {
         super(n);
         this.exp = exp;
+        this.retour = true;
+    }
+
+    /**
+     * Setteur sur le nom de la fonction que l'on doit quitter
+     * @param nomFonction
+     */
+    public void setNomFonction (String nomFonction) {
+        this.nomFonction = nomFonction;
     }
 
     /**
@@ -32,7 +46,9 @@ public class Retourne extends Instruction {
     @Override
     public String toMIPS() {
         return  "                #sauvegarde de " + exp + " dans v0\n" +
-                exp.toMIPS();
+                exp.toMIPS() +
+                "                #saut vers la sortie de la fonction\n" +
+                "    j sortie" + nomFonction + "\n";
     }
 
 }

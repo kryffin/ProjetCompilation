@@ -29,6 +29,7 @@ import compilateurYal.exceptions.AnalyseLexicaleException;
   private Symbol symbol(int type, Object value) {
 	return new Symbol(type, yyline, yycolumn, value) ;
   }
+
 %}
 
 idf = [A-Za-z_][A-Za-z_0-9]*
@@ -55,6 +56,8 @@ commentaire = [/][/].*
 "booleen"               { return symbol(CodesLexicaux.BOOLEEN); }
 
 ";"                     { return symbol(CodesLexicaux.POINTVIRGULE); }
+
+","                     { return symbol(CodesLexicaux.VIRGULE); }
 
 "+"                     { return symbol(CodesLexicaux.PLUS); }
 

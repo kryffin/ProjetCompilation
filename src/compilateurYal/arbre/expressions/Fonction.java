@@ -1,8 +1,12 @@
 package compilateurYal.arbre.expressions;
 
+import compilateurYal.arbre.ArbreAbstrait;
+import compilateurYal.arbre.parametres.BlocDeParametresEffectifs;
+import compilateurYal.exceptions.AnalyseSemantiqueException;
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.EntreeFonction;
 import compilateurYal.tds.symboles.Symbole;
+import compilateurYal.tds.symboles.SymboleFonction;
 
 public class Fonction extends Expression {
 
@@ -12,17 +16,25 @@ public class Fonction extends Expression {
     private IDF idf;
 
     /**
-     * numéro de région de la fonction
+     * paramètres de la fonction à l'appel
      */
-    private int nRegion;
+    private ArbreAbstrait parametres;
+
+    /**
+     * nombre de paramètres de la fonction à son appel
+     */
+    private int nbParametres;
 
     /**
      * Constructeur par numéro de ligne
      * @param n ligne
      */
-    public Fonction(IDF idf, int n) {
+    public Fonction(IDF idf, ArbreAbstrait parametres, int n) {
         super(n);
         this.idf = idf;
+        this.parametres = parametres;
+
+        this.nbParametres = ((BlocDeParametresEffectifs)parametres).nbParametres();
     }
 
     /**
@@ -30,8 +42,13 @@ public class Fonction extends Expression {
      */
     @Override
     public void verifier() {
-        Symbole s = TableDesSymboles.getInstance().identifier(new EntreeFonction(idf.getNom()), noLigne);
-        nRegion = s.getNRegion();
+        Symbole s = TableDesSymboles.getInstance().identifier(new EntreeFonction(idf.getNom(), nbParametres), noLigne);
+        if (nbParametres != ((SymboleFonction)s).getNbParametres()) {
+            new AnalyseSemantiqueException(noLigne, "nombre de paramètres incorrect");
+        }
+        idf.setNbParametres(nbParametres);
+        idf.verifier();
+        parametres.verifier();
     }
 
     /**
@@ -39,9 +56,11 @@ public class Fonction extends Expression {
      */
     @Override
     public String toMIPS() {
-        return  "                #appel de la fonction " + idf.getNom() + ", région : " + nRegion + "\n" +
+        return  "                #appel de la fonction " + idf.getNom() + "\n" +
+                "                #empiler les paramètres\n" +
+                parametres.toMIPS() +
                 "                #saut à l'étiquette de la fonction et sauvegarde de ra\n" +
-                "    jal " + idf.getNom() + nRegion + "\n";
+                "    jal " + idf.getNom() + nbParametres + "\n";
     }
 
     @Override

@@ -1,10 +1,8 @@
 package compilateurYal.arbre.expressions;
 
-import compilateurYal.CompteurRegions;
 import compilateurYal.Yal;
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.TableLocale;
-import compilateurYal.tds.entrees.Entree;
 import compilateurYal.tds.entrees.EntreeFonction;
 import compilateurYal.tds.entrees.EntreeVariable;
 import compilateurYal.tds.symboles.Symbole;
@@ -31,6 +29,11 @@ public class IDF extends Expression {
      * vrai si l'identifiant est une variable, faux si c'est une variable représentant une fonction
      */
     private boolean variable;
+
+    /**
+     * nombre de paramètre si l'idf défini une fonction (pour la surcharge de fonctions)
+     */
+    private int nbParametres;
 
     /**
      * Construction par nom et numéro de ligne
@@ -72,17 +75,25 @@ public class IDF extends Expression {
     }
 
     /**
+     * Setteur sur ne nombre de paramètres
+     * @param nb nombre de paramètres
+     */
+    public void setNbParametres (int nb) {
+        nbParametres = nb;
+    }
+
+    /**
      * vérifie si la variable est bien dans la table des symboles et met à jour le déplacement ainsi que le numéro de région
      */
     @Override
     public void verifier() {
         //récupération du symbole et renseignement du déplacement et type de la variable si elle existe bien
-        Symbole s = null;
+        Symbole s;
 
         if (variable) {
             s = TableDesSymboles.getInstance().identifier(new EntreeVariable(nom), noLigne);
         } else {
-            s = TableDesSymboles.getInstance().identifier(new EntreeFonction(nom), noLigne);
+            s = TableDesSymboles.getInstance().identifier(new EntreeFonction(nom, nbParametres), noLigne);
         }
 
         if (Yal.exception) {

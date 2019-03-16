@@ -26,9 +26,7 @@ public abstract class Entree {
      * @return hashcode du nom de l'entrée
      */
     @Override
-    public int hashCode() {
-        return nom.hashCode();
-    }
+    abstract public int hashCode();
 
     /**
      * Retourne vrai si this et obj sont égaux (par rapport au nom), faux sinon

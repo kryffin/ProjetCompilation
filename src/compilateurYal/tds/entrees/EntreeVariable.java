@@ -11,6 +11,11 @@ public class EntreeVariable extends Entree {
     }
 
     @Override
+    public int hashCode() {
+        return ("v" + getNom()).hashCode();
+    }
+
+    @Override
     public String toString() {
         return getNom();
     }
