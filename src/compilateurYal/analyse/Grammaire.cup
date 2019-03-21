@@ -9,6 +9,8 @@ import compilateurYal.arbre.expressions.logique.*;
 import compilateurYal.arbre.instructions.* ;
 import compilateurYal.exceptions.AnalyseSyntaxiqueException;
 import compilateurYal.tds.TableDesSymboles;
+import compilateurYal.tds.entrees.*;
+import compilateurYal.tds.symboles.*;
 
 import java_cup.runtime.*;
 
@@ -64,12 +66,12 @@ terminal Symbol     PROGRAMME, DEBUT, FIN, POINTVIRGULE, VIRGULE, ECRIRE, LIRE,
                     ENTIER, BOOLEEN, EGAL, PAR_OUV, PAR_FER, CRO_OUV, CRO_FER,
                     PLUS, MOINS, FOIS, DIV, EXCLA, INF, SUP, NON, ET, OU,
                     SI, ALORS, SINON, FINSI, TANTQUE, REPETER, FINTANTQUE,
-                    FONCTION, RETOURNE;
+                    FONCTION, RETOURNE, POINT, LONGUEUR;
 terminal String     IDF, CSTENTIERE;
 
 /* Non terminals used in the grammar section.  */
 
-non terminal ArbreAbstrait  PROG, LINST, INST, LDECL, DECL_VAR, DECL_FONC, ECR,
+non terminal ArbreAbstrait  PROG, LINST, INST, LDECL, DECL_VAR, DECL_FONC, ECR, DECL_TAB,
                             LECTURE, AFF, CONDITION, BOUCLE, PARAM, RET, LPARAM, PAR_EFF;
 non terminal Expression     EXP, OPER;
 
@@ -99,6 +101,15 @@ LDECL   ::=     LDECL:ld DECL_VAR:d
                     b.ajouter(d);
                     RESULT = b; :}
         |
+                LDECL:ld DECL_TAB:t
+                {: ((BlocDeDeclarations)ld).ajouter((DeclarationTableau)t);
+                   RESULT = ld; :}
+        |
+                DECL_TAB:t
+                {:  BlocDeDeclarations b = new BlocDeDeclarations(tleft + 1);
+                    b.ajouter(t);
+                    RESULT = b; :}
+        |
                 LDECL:ld DECL_FONC:d
                 {:  ((BlocDeDeclarations)ld).ajouter((DeclarationFonction)d);
                     RESULT = ld; :}
@@ -111,6 +122,10 @@ LDECL   ::=     LDECL:ld DECL_VAR:d
 
 DECL_VAR    ::= ENTIER IDF:i POINTVIRGULE
                 {:  RESULT = new DeclarationVariable(new IDF(i, ileft + 1), ileft + 1); :}
+                ;
+
+DECL_TAB    ::= ENTIER CRO_OUV EXP:e CRO_FER IDF:i POINTVIRGULE
+                {: RESULT = new DeclarationTableau(new IDF(i, true, true, ileft + 1), (Expression)e, ileft + 1); :}
                 ;
 
 FCT_REGION  ::= FONCTION
@@ -188,6 +203,9 @@ ECR     ::=     ECRIRE EXP:e POINTVIRGULE
 
 AFF     ::=     IDF:i EGAL EXP:e POINTVIRGULE
                 {: RESULT = new Affectation(new IDF(i, ileft + 1), e, ileft + 1); :}
+        |
+                IDF:i CRO_OUV EXP:indice CRO_FER EGAL EXP:e POINTVIRGULE
+                {: RESULT = new AffectationTableau(new CaseTableau(i, indice, ileft + 1), e, ileft + 1); :}
                 ;
 
 LECTURE ::=     LIRE IDF:i POINTVIRGULE
@@ -225,7 +243,11 @@ PAR_EFF ::=     PAR_EFF:p VIRGULE EXP:e
                     RESULT = p; :}
                 ;
     
-EXP     ::=     IDF:i PAR_OUV PAR_FER
+EXP     ::=     IDF:i POINT LONGUEUR
+                {:  SymboleTableau s = (SymboleTableau)TableDesSymboles.getInstance().identifier(new EntreeTableau(i), ileft + 1);
+                    RESULT = new ConstanteEntiere(((ConstanteEntiere)s.getTaille()).getCste(), ileft + 1); :}
+        |
+                IDF:i PAR_OUV PAR_FER
                 {: RESULT = new Fonction(new IDF(i, false, ileft + 1), new BlocDeParametresEffectifs(ileft + 1), ileft + 1); :}
         |
                 IDF:i PAR_OUV EXP:arg PAR_FER
@@ -243,6 +265,9 @@ EXP     ::=     IDF:i PAR_OUV PAR_FER
                 IDF:i
                 {:  IDF idf = new IDF(i, ileft + 1);
                     RESULT = idf; :}
+        |
+                IDF:i CRO_OUV EXP:e CRO_FER
+                {: RESULT = new CaseTableau(i, e, ileft + 1); :}
         |
                 PAR_OUV EXP:e PAR_FER
                 {: RESULT = e; :}

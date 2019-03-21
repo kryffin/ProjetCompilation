@@ -55,7 +55,11 @@ commentaire = [/][/].*
 
 "booleen"               { return symbol(CodesLexicaux.BOOLEEN); }
 
+"longueur"              { return symbol(CodesLexicaux.LONGUEUR); }
+
 ";"                     { return symbol(CodesLexicaux.POINTVIRGULE); }
+
+"."                     { return symbol(CodesLexicaux.POINT); }
 
 ","                     { return symbol(CodesLexicaux.VIRGULE); }
 

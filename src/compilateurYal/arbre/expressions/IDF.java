@@ -6,6 +6,7 @@ import compilateurYal.tds.TableLocale;
 import compilateurYal.tds.entrees.EntreeFonction;
 import compilateurYal.tds.entrees.EntreeVariable;
 import compilateurYal.tds.symboles.Symbole;
+import compilateurYal.tds.symboles.SymboleTableau;
 import compilateurYal.tds.symboles.SymboleVariable;
 
 public class IDF extends Expression {
@@ -29,6 +30,8 @@ public class IDF extends Expression {
      * vrai si l'identifiant est une variable, faux si c'est une variable représentant une fonction
      */
     private boolean variable;
+
+    private boolean tableau;
 
     /**
      * nombre de paramètre si l'idf défini une fonction (pour la surcharge de fonctions)
@@ -58,6 +61,21 @@ public class IDF extends Expression {
         this.nom = nom;
         nRegion = TableDesSymboles.getInstance().getTableCourante().getNRegion();
         this.variable = variable;
+    }
+
+    /**
+     * Construction par nom, type d'identifiant, tableau ou non et numéro de ligne
+     * @param nom nom de la variable
+     * @param variable vrai si variable, faux si fonction
+     * @param tableau vrai si tableau, faux sinon
+     * @param n ligne
+     */
+    public IDF (String nom, boolean variable, boolean tableau, int n) {
+        super(n);
+        this.nom = nom;
+        nRegion = TableDesSymboles.getInstance().getTableCourante().getNRegion();
+        this.variable = variable;
+        this.tableau = tableau;
     }
 
     /**
@@ -101,8 +119,10 @@ public class IDF extends Expression {
             return;
         }
 
-        if (variable) {
+        if (variable && !tableau) {
             deplacement = ((SymboleVariable)s).getDeplacement();
+        } else if (variable && tableau) {
+            deplacement = ((SymboleTableau)s).getDeplacement();
         }
         nRegion = s.getNRegion();
     }
