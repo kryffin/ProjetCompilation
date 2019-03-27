@@ -53,6 +53,9 @@ public abstract class ExpressionBinaire extends Expression {
         expDroite.verifier();
     }
 
+    /**
+     * @return vrai si les deux expressions sont constantes, faux sinon
+     */
     @Override
     public boolean estConstante() {
         return expGauche.estConstante && expDroite.estConstante;

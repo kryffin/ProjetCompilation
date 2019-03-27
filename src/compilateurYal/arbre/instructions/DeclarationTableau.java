@@ -32,6 +32,9 @@ public class DeclarationTableau extends Instruction {
         GestionnaireTailleZoneVariable.getInstance().incrementerTailleZoneVariable(); //deplacement des cases du tableau
     }
 
+    /**
+     * @return nom du tableau
+     */
     public String getNom () {
         return idf.getNom();
     }
@@ -41,6 +44,7 @@ public class DeclarationTableau extends Instruction {
         idf.verifier();
         taille.verifier();
 
+        //test que le tableau soit bien statique s'il est dans le programme principal
         if (nRegion == 0 && !taille.estConstante()) {
             new AnalyseSemantiqueException(noLigne, "un tableau dans le programme principal ne peut être que statique");
         }

@@ -6,7 +6,14 @@ import compilateurYal.tds.symboles.SymboleTableau;
 
 public class CaseTableau extends Expression {
 
+    /**
+     * nom du tableau
+     */
     private String nom;
+
+    /**
+     * indice de la case du tableau
+     */
     private Expression indice;
 
     /**
@@ -21,10 +28,16 @@ public class CaseTableau extends Expression {
         this.indice = indice;
     }
 
+    /**
+     * @return nom du tableau
+     */
     public String getNom() {
         return nom;
     }
 
+    /**
+     * @return indice du tableau
+     */
     public Expression getIndice () {
         return indice;
     }
