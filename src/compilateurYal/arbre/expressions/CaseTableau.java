@@ -2,7 +2,6 @@ package compilateurYal.arbre.expressions;
 
 import compilateurYal.tds.TableDesSymboles;
 import compilateurYal.tds.entrees.EntreeTableau;
-import compilateurYal.tds.symboles.Symbole;
 import compilateurYal.tds.symboles.SymboleTableau;
 
 public class CaseTableau extends Expression {
@@ -26,6 +25,10 @@ public class CaseTableau extends Expression {
         return nom;
     }
 
+    public Expression getIndice () {
+        return indice;
+    }
+
     @Override
     public void verifier() {
         indice.verifier();
@@ -40,7 +43,10 @@ public class CaseTableau extends Expression {
                 "    add $t8, $zero, " + s.getEnjambee() + "\n" +
                 "    mult $v0, $t8\n" +
                 "    mflo $v0\n" +
-                "    add $a0, $v0, " + s.getAdrImplementation() + "\n";
+                "    lw $t8, " + s.getDeplacement() + "($s7)\n" +
+                "    add $v0, $v0, $t8\n" +
+                "    add $v0, $v0, $s7\n" +
+                "    lw $v0, ($v0)\n";
     }
 
     @Override

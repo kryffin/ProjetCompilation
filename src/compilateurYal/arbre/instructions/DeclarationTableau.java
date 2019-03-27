@@ -29,12 +29,11 @@ public class DeclarationTableau extends Instruction {
 
         TableDesSymboles.getInstance().ajouter(new EntreeTableau(idf.getNom()), new SymboleTableau(tailleZoneVariable, nRegion, taille), n);
 
-        if (taille.estConstante()) {
-            for (int i = 0; i < Integer.valueOf(((ConstanteEntiere)taille).getCste()); i++) {
-                //incrémentation de la taille de la zone variable pour instancier chaque éléments du tableau
-                GestionnaireTailleZoneVariable.getInstance().incrementerTailleZoneVariable();
-            }
-        }
+        GestionnaireTailleZoneVariable.getInstance().incrementerTailleZoneVariable(); //deplacement des cases du tableau
+    }
+
+    public String getNom () {
+        return idf.getNom();
     }
 
     @Override
@@ -50,13 +49,8 @@ public class DeclarationTableau extends Instruction {
     @Override
     public String toMIPS() {
         StringBuilder sb = new StringBuilder();
-        if (taille.estConstante()) {
-            for (int i = 0; i < Integer.valueOf(((ConstanteEntiere)taille).getCste()); i++) {
-                //allouer chaque case du tableau
-                sb.append("                #tableau " + idf + ", case " + i + "\n");
-                sb.append("    add $sp, $sp, -4\n");
-            }
-        }
+        sb.append("                #info sur le déplacement des cases de " + idf + "\n");
+        sb.append("    add $sp, $sp, -4\n");
 
         return sb.toString();
     }

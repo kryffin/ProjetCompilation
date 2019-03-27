@@ -19,6 +19,7 @@ public class Programme extends ArbreAbstrait {
                                         "finLigne:     .asciiz \"\\n\"\n" +
                                         "vrai:         .asciiz \"vrai\"\n" +
                                         "faux:         .asciiz \"faux\"\n" +
+                                        "errExec:      .asciiz \"Erreur à l'execution !\"\n" +
                                         "              .align 2\n";
 
     /**
@@ -30,9 +31,14 @@ public class Programme extends ArbreAbstrait {
     /**
      * fin du code en mips
      */
-    protected static String finCode =   "end :\n" +
+    protected static String finCode =   "end:\n" +
                                         "    li $v0, 10            # retour au système\n" +
-                                        "    syscall\n" ;
+                                        "    syscall\n\n" +
+                                        "affErreur:\n" +
+                                        "    la $a0, errExec\n" +
+                                        "    li $v0, 4\n" +
+                                        "    syscall\n" +
+                                        "    b end\n";
 
     /**
      * Constructeur par numéro de ligne

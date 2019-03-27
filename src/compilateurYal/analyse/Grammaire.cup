@@ -102,12 +102,12 @@ LDECL   ::=     LDECL:ld DECL_VAR:d
                     RESULT = b; :}
         |
                 LDECL:ld DECL_TAB:t
-                {: ((BlocDeDeclarations)ld).ajouter((DeclarationTableau)t);
+                {: ((BlocDeDeclarations)ld).ajouterTableau((DeclarationTableau)t);
                    RESULT = ld; :}
         |
                 DECL_TAB:t
                 {:  BlocDeDeclarations b = new BlocDeDeclarations(tleft + 1);
-                    b.ajouter(t);
+                    b.ajouterTableau(t);
                     RESULT = b; :}
         |
                 LDECL:ld DECL_FONC:d

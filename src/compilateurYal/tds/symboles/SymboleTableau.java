@@ -15,10 +15,8 @@ public class SymboleTableau extends Symbole {
     public SymboleTableau(int deplacement, int nRegion, Expression taille) {
         super(nRegion);
         this.deplacement = deplacement;
-        this.dynamique = false;
+        this.dynamique = true;
         this.taille = taille;
-        this.adrImplementation = deplacement;
-        this.adrOrigineVirtuelle = deplacement;
         this.enjambee = 4;
     }
 

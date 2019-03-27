@@ -54,6 +54,11 @@ public abstract class ExpressionBinaire extends Expression {
     }
 
     @Override
+    public boolean estConstante() {
+        return expGauche.estConstante && expDroite.estConstante;
+    }
+
+    @Override
     public String toMIPS() {
 
         if (expDroite.estConstante()) {

@@ -19,6 +19,7 @@ public class Division extends ExpressionArithmetique {
     @Override
     public String toMIPS() {
         return  super.toMIPS() +
+                "    beq $v0, $zero, affErreur\n" +
                 "    div $t8, $v0\n" +
                 "    mflo $v0\n";
     }
